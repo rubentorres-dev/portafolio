@@ -1,0 +1,487 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --noche: #05051a;
+  --violeta: #7c3aed;
+  --brillo: #a78bfa;
+  --indigo: #4f46e5;
+}
+
+@layer base {
+  html { background: var(--noche); color-scheme: dark; }
+  /* Monitores muy grandes (ultrawide, 4K, 36"+): todo crece en proporción, como un zoom.
+     Las medidas están en rem, así que al subir la fuente base se escala la página entera. */
+  @media (min-width: 2200px) { html { font-size: clamp(16px, 0.74vw, 30px); } }
+  body { @apply bg-noche font-sans text-texto antialiased; overflow-x: hidden; }
+  ::selection { background: rgba(124, 58, 237, 0.5); color: #fff; }
+  :focus-visible { outline: 2px solid var(--brillo); outline-offset: 3px; border-radius: 8px; }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+}
+
+@layer components {
+  .contenedor { @apply mx-auto w-full max-w-6xl px-5 md:px-8 2xl:max-w-7xl; }
+  .seccion { @apply relative py-24 md:py-32; }
+  .etiqueta { @apply font-medium uppercase text-violeta-brillo text-xs md:text-sm tracking-ancho; }
+  .titulo { @apply text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl 2xl:text-8xl; }
+  .subtexto { @apply text-base leading-relaxed text-texto-suave md:text-lg; }
+  .degradado { background: linear-gradient(90deg, #fff 0%, #c4b5fd 45%, #7c3aed 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .vidrio { background: rgba(20, 20, 50, 0.55); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .tarjeta { @apply rounded-tarjeta border border-white/10 bg-white/[0.03]; }
+
+  .btn { @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-6 py-3 text-sm font-semibold transition-colors duration-300 select-none; }
+  .btn-principal { @apply btn bg-white text-noche; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06), 0 10px 40px rgba(124, 58, 237, 0.45); }
+  .btn-principal:hover { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.08), 0 14px 60px rgba(124, 58, 237, 0.7); }
+  .btn-secundario { @apply btn text-white border border-violeta-brillo/60; box-shadow: inset 0 0 20px rgba(124, 58, 237, 0.35); }
+  .btn-secundario:hover { @apply bg-violeta/20 border-violeta-brillo; }
+
+  .campo { @apply w-full rounded-2xl border border-white/10 bg-noche/60 px-4 py-3.5 text-texto placeholder:text-texto-suave/70 outline-none transition; }
+  .campo:focus { border-color: var(--brillo); box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25); }
+}
+
+/* ---------- Efectos ---------- */
+.estrellas {
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #ffffff88, transparent), radial-gradient(1px 1px at 80% 30%, #ffffff66, transparent),
+    radial-gradient(1px 1px at 30% 70%, #ffffff55, transparent), radial-gradient(1px 1px at 65% 85%, #ffffff66, transparent),
+    radial-gradient(1px 1px at 92% 60%, #ffffff55, transparent), radial-gradient(1.5px 1.5px at 45% 15%, #ffffff77, transparent),
+    radial-gradient(1px 1px at 5% 90%, #ffffff44, transparent), radial-gradient(1px 1px at 55% 45%, #ffffff33, transparent);
+}
+
+.eclipse {
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 50%, var(--noche) 63%, transparent 64%);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 0 40px 8px rgba(165, 155, 255, 0.9),
+    0 0 140px 40px rgba(79, 70, 229, 0.75), 0 0 320px 120px rgba(79, 70, 229, 0.35);
+}
+
+.destello {
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95), rgba(167, 139, 250, 0.6) 35%, transparent 70%);
+  filter: blur(6px);
+}
+
+.aro-avatar::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  border-radius: 9999px;
+  background: conic-gradient(from 200deg, transparent, #7c3aed, #4f46e5, transparent 60%);
+  filter: blur(28px);
+  opacity: 0.8;
+  animation: girar 14s linear infinite;
+}
+
+.borde-animado {
+  background: linear-gradient(#0d0d2a, #0d0d2a) padding-box,
+    conic-gradient(from var(--angulo, 0deg), #a78bfa, #4f46e5 30%, transparent 55%, transparent 80%, #a78bfa) border-box;
+  border: 1px solid transparent;
+  animation: borde 6s linear infinite;
+}
+
+@property --angulo { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes borde { to { --angulo: 360deg; } }
+@keyframes girar { to { transform: rotate(360deg); } }
+@keyframes parpadeo { 50% { opacity: 0; } }
+.cursor-texto { animation: parpadeo 1s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* Estilos del contenido Markdown del blog */
+.prosa h2 { @apply mb-4 mt-10 text-2xl font-semibold; }
+.prosa h3 { @apply mb-3 mt-8 text-xl font-semibold; }
+.prosa p { @apply mb-5 leading-relaxed text-white/80; }
+.prosa ul, .prosa ol { @apply mb-5 space-y-2 pl-6 text-white/80; }
+.prosa ul { list-style: disc; }
+.prosa ol { list-style: decimal; }
+.prosa strong { @apply text-white; }
+.prosa a { @apply text-violeta-claro underline; }
+.prosa code { @apply rounded bg-violeta/20 px-1.5 py-0.5 font-mono text-sm text-violeta-claro; }
+.prosa pre { @apply mb-6 overflow-x-auto rounded-2xl border border-white/10 bg-noche-2 p-5; }
+.prosa pre code { @apply bg-transparent p-0 text-white/90; }
+
+/* =====================  MEJORAS v2  ===================== */
+
+/* Barra estilo Liquid Glass (Apple) */
+.vidrio-liquido {
+  background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(255,255,255,0.05), 0 10px 40px rgba(0,0,0,0.35);
+}
+.pastilla-vidrio {
+  background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(167,139,250,0.14));
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 4px 20px rgba(124,58,237,0.35);
+  backdrop-filter: blur(8px);
+}
+
+/* Eclipse: luz que gira sin parar y brillo que respira */
+.orbita { animation: girar 9s linear infinite; }
+.orbita-lenta { animation: girar 22s linear infinite reverse; }
+.chispa {
+  background: radial-gradient(ellipse at center, #fff 0%, rgba(196,181,253,.9) 25%, rgba(124,58,237,.5) 50%, transparent 72%);
+  filter: blur(4px);
+}
+.respira { animation: respirar 5s ease-in-out infinite; }
+@keyframes respirar { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: .82; filter: brightness(1.25); } }
+
+/* Nombre con media luna de luz violeta que recorre cada letra (automático) */
+.letra-luna {
+  background-image: radial-gradient(circle at 50% 50%,
+    #a78bfa 0%, #8b5cf6 26%, #a78bfa 40%, #ddd6fe 47%, #ffffff 51%, #f5f3ff 55%, #c084fc 61%, #8b5cf6 72%, #7c3aed 100%);
+  background-size: 280% 280%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(168,85,247,.95)) drop-shadow(0 0 24px rgba(124,58,237,.85)) drop-shadow(0 0 60px rgba(109,40,217,.55));
+  animation: luna 3.8s ease-in-out infinite alternate;
+}
+@keyframes luna { from { background-position: 0% 15%; } to { background-position: 100% 85%; } }
+
+/* Tarjetas de tecnología con neón de su color */
+.tech-tile { --neon: #a78bfa; transition: border-color .35s, box-shadow .35s, transform .35s, background .35s; }
+.tech-tile:hover {
+  border-color: var(--neon);
+  background: color-mix(in srgb, var(--neon) 10%, transparent);
+  box-shadow: 0 0 0 1px var(--neon), 0 0 18px color-mix(in srgb, var(--neon) 55%, transparent), inset 0 0 14px color-mix(in srgb, var(--neon) 25%, transparent);
+  transform: translateY(-4px);
+}
+.tech-tile:hover .tech-nombre { color: #fff; text-shadow: 0 0 10px var(--neon); }
+.tech-tile:hover .dato-valor { text-shadow: 0 0 14px var(--neon); }
+
+/* Borde neón multicolor que gira (estilo Google) */
+.neon-google { position: relative; isolation: isolate; }
+.neon-google::before {
+  content: ''; position: absolute; inset: -1.5px; border-radius: inherit; z-index: -1; padding: 1.5px;
+  background: conic-gradient(from var(--angulo, 0deg), #4285f4, #ea4335, #fbbc05, #34a853, #a855f7, #4285f4);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity .4s; animation: borde 3s linear infinite;
+}
+.neon-google::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -2;
+  background: conic-gradient(from var(--angulo, 0deg), #4285f4, #ea4335, #fbbc05, #34a853, #a855f7, #4285f4);
+  filter: blur(18px); opacity: 0; transition: opacity .4s; animation: borde 3s linear infinite;
+}
+.neon-google:hover::before { opacity: 1; }
+.neon-google:hover::after { opacity: .35; }
+
+/* Neón de un solo color (Servicios) */
+.neon-fijo { transition: border-color .4s, box-shadow .4s; }
+.neon-fijo:hover { border-color: #c084fc; box-shadow: 0 0 0 1px #c084fc, 0 0 28px rgba(192,132,252,.55), inset 0 0 22px rgba(192,132,252,.15); }
+
+/* Redes sociales con el color de la marca */
+.red-social { transition: color .3s, border-color .3s, box-shadow .3s, transform .3s, background .3s; }
+.red-social:hover {
+  color: var(--marca); border-color: var(--marca); transform: translateY(-4px);
+  background: color-mix(in srgb, var(--marca) 12%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--marca) 55%, transparent);
+}
+
+/* Campos del formulario que se aclaran al escribir */
+.campo-flotante { position: relative; }
+.campo-flotante .campo { padding-top: 1.35rem; padding-bottom: .55rem; transition: background-color .35s, color .35s, border-color .35s, box-shadow .35s; }
+.campo-flotante label {
+  position: absolute; left: 1rem; top: .95rem; color: rgba(139,139,167,.9); pointer-events: none;
+  transition: transform .25s ease, font-size .25s, color .25s, top .25s;
+}
+.campo-flotante .campo:focus, .campo-flotante .campo:not(:placeholder-shown) { background: #fff; color: #0b0b20; border-color: #fff; }
+.campo-flotante .campo:focus + label, .campo-flotante .campo:not(:placeholder-shown) + label { top: .35rem; font-size: .7rem; color: #7c3aed; font-weight: 600; }
+
+/* Barra de colores del pie de página */
+.barra-arcoiris {
+  height: 3px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed, #c026d3, #ec4899, #f59e0b, #10b981, #06b6d4, #4f46e5);
+  background-size: 200% 100%;
+  animation: deslizar 8s linear infinite;
+  box-shadow: 0 0 18px rgba(124,58,237,.6);
+}
+@keyframes deslizar { to { background-position: 200% 0; } }
+
+/* =====================  AGUJERO NEGRO v3  ===================== */
+.eclipse-v3 { border-radius: 9999px; }
+.eclipse-v3 > *, .ev-bordes > *, .ev-cometa-blur > *, .ev-halo-blur > * { position: absolute; inset: 0; border-radius: 9999px; }
+
+/* Máscaras en forma de anillo (solo se ve el borde del círculo) */
+.ev-borde, .ev-cometa {
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
+}
+/* El brillo va en el contenedor para que la máscara no lo recorte */
+.ev-bordes { filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 14px rgba(199,210,254,.95)) drop-shadow(0 0 34px rgba(99,102,241,.9)); }
+.ev-halo {
+  inset: -3%;
+  background: conic-gradient(from 0deg, #4f46e5, #818cf8, #3730a3, #6d28d9, #a5b4fc, #4338ca, #7c3aed, #4f46e5);
+  -webkit-mask: radial-gradient(farthest-side, transparent 88%, #000 94%, #000 96%, transparent 100%);
+  mask: radial-gradient(farthest-side, transparent 88%, #000 94%, #000 96%, transparent 100%);
+}
+.ev-halo-blur { filter: blur(30px) saturate(1.4); }
+
+/* Brillo base que nunca se apaga */
+.ev-glow-fijo { box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 0 30px 6px rgba(165,160,255,.75), 0 0 110px 30px rgba(79,70,229,.6), 0 0 260px 90px rgba(67,56,202,.32); }
+
+/* Disco negro con neblina azul abajo, como en el video */
+.ev-disco {
+  inset: 3px;
+  background:
+    radial-gradient(60% 30% at 50% 98%, rgba(79,70,229,.5), transparent 70%),
+    radial-gradient(circle at 50% 50%, #04041a 0%, #04041a 80%, #0b0c45 93%, rgba(79,70,229,.55) 100%);
+}
+
+/* Anillo fino con zonas brillantes que recorren toda la curva */
+.ev-borde {
+  background: conic-gradient(from 0deg,
+    #6366f1 0deg, #ffffff 20deg, #c7d2fe 45deg, #4f46e5 80deg, #a5b4fc 120deg, #ffffff 150deg,
+    #818cf8 185deg, #4338ca 220deg, #e0e7ff 255deg, #ffffff 275deg, #6366f1 310deg, #c4b5fd 340deg, #6366f1 360deg);
+}
+.ev-borde-2 {
+  opacity: .6; mix-blend-mode: screen;
+  background: conic-gradient(from 90deg, transparent 0deg, #ffffff 25deg, transparent 60deg, transparent 150deg, #c4b5fd 175deg, transparent 210deg, transparent 280deg, #ffffff 300deg, transparent 330deg);
+}
+
+/* Cometas: un arco corto que va de transparente a blanco (estela + punta brillante) */
+.ev-cometa {
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 285deg, rgba(124,58,237,.35) 320deg, rgba(196,181,253,.85) 350deg, #ffffff 358deg, transparent 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 7px), #000 calc(100% - 1px), transparent 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 7px), #000 calc(100% - 1px), transparent 100%);
+}
+.ev-cometa-blur { filter: blur(1.5px) drop-shadow(0 0 10px #fff) drop-shadow(0 0 22px #a78bfa); }
+
+/* Velocidades distintas para que nunca se vea repetitivo */
+.ev-gira { animation: girar 7s linear infinite; }
+.ev-gira-inverso { animation: girar 11s linear infinite reverse; }
+.ev-gira-lento { animation: girar 18s linear infinite; }
+.ev-gira-cometa { animation: girar 6.9s cubic-bezier(.45,.05,.55,.95) infinite; }
+.ev-parpadeo { animation: parpadeoLuz 4.5s ease-in-out infinite; }
+@keyframes parpadeoLuz {
+  0%, 100% { opacity: 1; } 18% { opacity: .82; } 32% { opacity: .97; } 47% { opacity: .78; } 63% { opacity: 1; } 80% { opacity: .88; }
+}
+.ev-gira, .ev-gira-inverso, .ev-gira-lento, .ev-gira-cometa { will-change: transform; }
+/* En celulares se aligera el efecto para cuidar batería y fluidez */
+@media (max-width: 768px) {
+  .ev-halo-blur { filter: blur(18px); }
+  .ev-borde-2 { display: none; }
+}
+
+/* Filtros de proyectos con neón de su color */
+.filtro-neon { --neon: #a78bfa; transition: border-color .3s, box-shadow .3s, color .3s, background .3s, transform .3s; }
+.filtro-neon:hover { border-color: var(--neon); color: #fff; transform: translateY(-2px);
+  background: color-mix(in srgb, var(--neon) 14%, transparent);
+  box-shadow: 0 0 0 1px var(--neon), 0 0 18px color-mix(in srgb, var(--neon) 60%, transparent), inset 0 0 12px color-mix(in srgb, var(--neon) 25%, transparent); }
+
+/* =====================  MEDIA LUNA (eclipse)  ===================== */
+@property --p { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --tibio { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+.luna {
+  position: relative; aspect-ratio: 1;
+  /* Color de la luz: magenta eléctrico (video) que pasa a blanco cálido al salir */
+  --luz: color-mix(in srgb, #ffe2b8 calc(var(--tibio) * 100%), #f472f6);
+}
+.luna > div { position: absolute; border-radius: 9999px; pointer-events: none; }
+
+/* Azul eléctrico intenso que inunda el fondo (como en el video).
+   Sin borde redondeado y con "closest-side": el brillo se desvanece por completo
+   antes de llegar al borde, así no se ve ningún círculo cortado. */
+.luna > .luna-fondo {
+  inset: -95%;
+  border-radius: 0;
+  background: radial-gradient(closest-side circle at 50% 50%,
+    rgba(70,60,255,.95) 0%, rgba(52,44,255,.72) 22%, rgba(40,32,220,.45) 42%, rgba(30,24,170,.18) 62%, rgba(20,16,120,.06) 80%, transparent 100%);
+  translate: -14% 0;
+  opacity: var(--p);
+  filter: saturate(1.4);
+}
+/* Destello blanco muy brillante que sale del borde izquierdo */
+.luna-bloom {
+  left: -80%; top: 50%; width: 125%; aspect-ratio: 1;
+  translate: 0 -50%;
+  background: radial-gradient(circle,
+    #ffffff 0%, #ffffff 11%, #fbf2ff 17%, color-mix(in srgb, var(--luz) 60%, #ffffff) 23%, color-mix(in srgb, var(--luz) 45%, #5b4bff) 31%, rgba(80,70,255,.7) 42%, rgba(50,40,230,.3) 57%, transparent 72%);
+  opacity: var(--p);
+  scale: calc(.4 + var(--p) * .8);
+  filter: blur(8px) saturate(1.3);
+  mix-blend-mode: screen;
+}
+/* Rayo horizontal (lens flare) */
+.luna-destello {
+  left: -55%; top: 50%; width: 85%; height: 4px;
+  translate: 0 -50%;
+  background: radial-gradient(ellipse at center, #fff, rgba(255,255,255,.85) 25%, var(--luz) 50%, transparent 72%);
+  opacity: calc(var(--p) * .95);
+  filter: blur(1px);
+}
+/* Media luna: borde fino y nítido, blanco por dentro y magenta eléctrico por fuera */
+.luna-arco {
+  inset: 0;
+  background: radial-gradient(circle at 26% 50%, #ffffff 0%, #ffffff 40%, #ffd6ff 62%, var(--luz) 82%, #c026d3 100%);
+  box-shadow:
+    0 0 4px 1px #ffffff,
+    0 0 14px 3px var(--luz),
+    0 0 34px 8px color-mix(in srgb, var(--luz) 70%, #a21caf),
+    0 0 80px 22px rgba(124,58,237,.55);
+  translate: calc(var(--p) * -6.5%) 0;
+  opacity: min(1, calc(var(--p) * 4));
+}
+/* El disco (negro o tu avatar) con reflejo azulado del borde iluminado */
+.luna-disco {
+  inset: 0; overflow: hidden;
+  background: radial-gradient(circle at 62% 45%, #1a1660, #07082a 72%);
+  box-shadow: inset calc(var(--p) * 14px) 0 22px color-mix(in srgb, var(--luz) 55%, transparent), inset -40px 0 70px rgba(10,8,60,.6);
+}
+.luna-disco img { width: 100%; height: 100%; object-fit: cover; }
+
+/* 404: el ciclo completo del video en bucle */
+.luna-auto { animation: cicloLuna 9s ease-in-out infinite; }
+@keyframes cicloLuna {
+  0%   { --p: 0;   --tibio: 0; }
+  12%  { --p: .12; --tibio: 0; }
+  38%  { --p: 1;   --tibio: 0; }
+  62%  { --p: 1;   --tibio: .15; }
+  82%  { --p: .45; --tibio: 1; }
+  100% { --p: 0;   --tibio: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .luna { --p: 1; } }
+
+/* Guion entre RUBEN y DEV: línea de luz violeta */
+.separador-luna {
+  width: 0.7em; height: 0.09em; border-radius: 9999px; margin-right: 0.63em;
+  background: linear-gradient(90deg, transparent, #c4b5fd, #ffffff, #c4b5fd, transparent);
+  box-shadow: 0 0 12px rgba(168,85,247,.9), 0 0 28px rgba(124,58,237,.6);
+}
+
+/* ===== Inicio (como el video): el anillo cruza la pantalla de lado a lado y su curva
+   baja lo suficiente para que el nombre, las frases y los botones queden DENTRO ===== */
+.hero-anillo { --d: 160vw; width: var(--d); height: var(--d); top: calc(72svh - var(--d)); }
+.hero-nombre { top: 36svh; }
+.hero-contenido { top: 46svh; }
+@media (min-width: 768px) {
+  .hero-anillo { --d: 112vw; top: calc(88svh - var(--d)); }
+  .hero-nombre { top: 40svh; }
+  .hero-contenido { top: calc(40svh + clamp(4.5rem, 8.5vw, 7.5rem)); }
+}
+/* Pantallas muy anchas y bajas (ultrawide): el anillo se limita para no quedar casi plano */
+@media (min-width: 768px) and (min-aspect-ratio: 21/9) {
+  .hero-anillo { --d: 96vw; }
+}
+
+/* Botón de WhatsApp: se ilumina con su verde como los íconos de redes */
+.btn-whatsapp {
+  background: #25D366; color: #06210f; border: 1px solid #25D366;
+  box-shadow: 0 10px 40px rgba(37,211,102,.35);
+  transition: transform .3s, box-shadow .3s, background .3s;
+}
+.btn-whatsapp:hover {
+  background: #3be37a; transform: translateY(-4px);
+  box-shadow: 0 0 0 2px rgba(37,211,102,.9), 0 0 24px rgba(37,211,102,.75), 0 0 60px rgba(37,211,102,.4), inset 0 0 12px rgba(255,255,255,.25);
+}
+
+.btn-telegram {
+  background: #26A5E4; color: #fff; border: 1px solid #26A5E4;
+  box-shadow: 0 10px 40px rgba(38,165,228,.35);
+  transition: transform .3s, box-shadow .3s, background .3s;
+}
+.btn-telegram:hover {
+  background: #3db5f0; transform: translateY(-4px);
+  box-shadow: 0 0 0 2px rgba(38,165,228,.9), 0 0 24px rgba(38,165,228,.75), 0 0 60px rgba(38,165,228,.4), inset 0 0 12px rgba(255,255,255,.25);
+}
+
+/* Casilla de autorización de datos (Ley 1581) */
+.casilla-legal { display: flex; gap: .7rem; align-items: flex-start; margin: .25rem 0 1rem; text-align: left;
+  font-size: .8rem; line-height: 1.45; color: rgba(226,224,255,.75); cursor: pointer; }
+.casilla-legal input { appearance: none; flex-shrink: 0; width: 1.15rem; height: 1.15rem; margin-top: .1rem; border-radius: .35rem;
+  border: 1.5px solid rgba(196,181,253,.6); background: rgba(255,255,255,.04); cursor: pointer; transition: all .2s; }
+.casilla-legal input:checked { background: #8b5cf6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E") center/80% no-repeat;
+  border-color: #a78bfa; box-shadow: 0 0 12px rgba(139,92,246,.6); }
+.casilla-legal input:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
+.casilla-error input { border-color: #fda4af; }
+
+/* Etiqueta del globo: país + bandera al pasar el cursor */
+.globo-tip {
+  display: flex; align-items: center; gap: .55rem;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: .45rem .8rem .45rem .5rem;
+  border-radius: 999px;
+  background: rgba(16, 12, 40, .78);
+  border: 1px solid rgba(167, 139, 250, .45);
+  box-shadow: 0 0 18px rgba(124, 58, 237, .45), inset 0 1px 0 rgba(255, 255, 255, .08);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  color: #fff; font-size: .85rem; font-weight: 500; white-space: nowrap;
+  animation: globo-tip-in .18s ease-out;
+}
+.globo-tip img { width: 1.6rem; height: 1.2rem; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(255,255,255,.15); }
+@keyframes globo-tip-in { from { opacity: 0; transform: translate(-50%, calc(-100% - 6px)); } }
+
+/* =====================  ECLIPSE TOTAL (página de gracias)  =====================
+   Igual que la media luna, pero la luz rodea TODO el disco: sale de detrás,
+   se vuelve más fuerte y luego queda "respirando". --p controla la intensidad. */
+.total {
+  --d: 640px;
+  position: relative; display: grid; place-items: center;
+  width: var(--d); height: var(--d); flex-shrink: 0;
+  /* centrado aunque sea más ancho que la pantalla (en celular se sale por los lados) */
+  justify-self: start; margin-left: 50%; translate: -50% 0;
+  animation: totalEntrada 3.2s cubic-bezier(.2,.7,.2,1) forwards, totalLatido 3.6s ease-in-out 3.2s infinite alternate;
+}
+@media (min-width: 768px) { .total { --d: clamp(640px, 84svh, 960px); } }
+.total > div[aria-hidden] { position: absolute; border-radius: 9999px; pointer-events: none; }
+
+@keyframes totalEntrada { 0% { --p: 0; } 25% { --p: .15; } 100% { --p: 1; } }
+@keyframes totalLatido { from { --p: 1; } to { --p: .78; } }
+
+/* Azul eléctrico que inunda el fondo (sin borde visible) */
+.total > .total-fondo {
+  inset: -60%; border-radius: 0;
+  background: radial-gradient(closest-side circle,
+    rgba(70,60,255,.75) 0%, rgba(52,44,255,.55) 38%, rgba(40,32,220,.3) 58%, rgba(30,24,170,.1) 78%, transparent 100%);
+  opacity: calc(var(--p) * .9);
+}
+/* Rayos suaves de la corona que giran lento */
+.total > .total-rayos {
+  inset: -22%;
+  background: repeating-conic-gradient(from 0deg, rgba(244,114,246,.0) 0deg 7deg, rgba(244,114,246,.55) 9deg, rgba(167,139,250,.0) 13deg 20deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 66%, #000 74%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 66%, #000 74%, transparent 100%);
+  filter: blur(10px);
+  opacity: calc(var(--p) * .7);
+  scale: calc(.9 + var(--p) * .12);
+  animation: girarCorona 60s linear infinite;
+  mix-blend-mode: screen;
+}
+/* Corona: anillo de luz blanca → magenta → violeta que sale de detrás */
+.total > .total-corona {
+  inset: -14%;
+  background: radial-gradient(closest-side circle,
+    transparent 68%, rgba(255,255,255,.95) 71.5%, #ffd6ff 73.5%, rgba(244,114,246,.85) 77%, rgba(139,92,246,.6) 83%, rgba(79,70,229,.28) 91%, transparent 100%);
+  filter: blur(5px) saturate(1.3);
+  opacity: var(--p);
+  scale: calc(.88 + var(--p) * .12);
+}
+/* Borde fino y nítido del disco */
+.total > .total-borde {
+  inset: 0;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,.95),
+    0 0 10px 2px #ffffff,
+    0 0 26px 6px rgba(244,114,246,.85),
+    0 0 70px 18px rgba(192,38,211,.6),
+    0 0 140px 40px rgba(124,58,237,.45);
+  opacity: min(1, calc(var(--p) * 3));
+}
+/* El disco negro, con un leve reflejo de la luz por dentro */
+.total > .total-disco {
+  inset: 0;
+  background: radial-gradient(circle at 50% 42%, #0e0c34 0%, #070620 55%, #04041a 100%);
+  box-shadow: inset 0 0 calc(var(--p) * 70px) rgba(196,181,253,.28), inset 0 0 calc(var(--p) * 18px) rgba(244,114,246,.35);
+}
+.total-contenido { position: relative; z-index: 1; width: min(78%, calc(100vw - 2.5rem)); }
+@keyframes girarCorona { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .total { animation: none; --p: 1; }
+  .total > .total-rayos { animation: none; }
+}

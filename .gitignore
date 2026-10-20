@@ -1,0 +1,15 @@
+# Dependencias y compilados
+node_modules/
+dist/
+coverage/
+
+# Variables de entorno (¡nunca subirlas!)
+.env
+.env.local
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+*.log

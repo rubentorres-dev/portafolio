@@ -1,0 +1,51 @@
+# Levanta todo el proyecto en local.
+#   Solo la base de datos:  docker compose up -d db
+#   Todo:                   docker compose up --build
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: portafolio-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: portafolio
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d:ro   # crea tablas y datos la primera vez
+      - pgdata:/var/lib/postgresql/data
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d portafolio"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: portafolio-api
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:postgres@db:5432/portafolio
+      CORS_ORIGIN: http://localhost:8080,http://localhost:5173
+      GITHUB_USER: rubentorres-dev
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 256m
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000
+    container_name: portafolio-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    mem_limit: 128m
+
+volumes:
+  pgdata:
