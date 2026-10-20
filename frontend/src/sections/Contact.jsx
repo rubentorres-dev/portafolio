@@ -72,8 +72,8 @@ export default function Contact({ asuntoInicial = '' }) {
               </a>
             </div>
           </Reveal>
-          <Reveal delay={0.4} className="mt-8 flex flex-wrap gap-3">
-            {redes.map((r) => <SocialIcon key={r.nombre} red={r} />)}
+          <Reveal delay={0.4} className="fila-redes mt-8">
+            {redes.map((r) => <SocialIcon key={r.nombre} red={r} tamano="" />)}
           </Reveal>
         </div>
 

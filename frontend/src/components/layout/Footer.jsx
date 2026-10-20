@@ -12,8 +12,8 @@ export default function Footer() {
         <p className="mx-auto min-h-[2em] max-w-2xl text-lg italic text-violeta-claro md:text-xl">
           <Typewriter frases={perfil.frasesPie} velocidad={46} pausa={2600} />
         </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {redes.map((r) => <SocialIcon key={r.nombre} red={r} tamano="h-11 w-11" />)}
+        <div className="fila-redes mx-auto mt-8 justify-center">
+          {redes.map((r) => <SocialIcon key={r.nombre} red={r} tamano="" />)}
         </div>
       </div>
       <div className="border-t border-white/5">

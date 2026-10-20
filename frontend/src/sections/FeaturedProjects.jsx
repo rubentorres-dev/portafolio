@@ -39,10 +39,10 @@ export default function FeaturedProjects({ todos = false }) {
         </div>
 
         {(
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence initial={false}>
               {lista.map((p, i) => (
-                <motion.div key={p.slug} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} exit={{ opacity: 0, scale: 0.95 }}
+                <motion.div key={p.slug} className="min-w-0" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.5, delay: i * 0.06 }}>
                   <ProjectCard p={p} destacada={i === 0 && filtro === 'Todos'} />
                 </motion.div>

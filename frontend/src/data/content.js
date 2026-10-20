@@ -29,6 +29,9 @@ export const perfil = {
   correo: 'rt633659@gmail.com',
   whatsapp: '573245374597', // formato internacional sin "+"
   telegram: 'rubentorres_DEV', // usuario de Telegram sin "@"
+  // Cuando crees las cuentas, cambia null por el usuario (sin "@") y se activan solos los botones e íconos:
+  instagram: null, // ej. 'rubentorres.dev'  → instagram.com/rubentorres.dev
+  facebook: null,  // ej. 'rubentorres.dev'  → facebook.com/rubentorres.dev
   // Pon tu CV en frontend/public/cv/ y cambia null por '/cv/Ruben_Torres_Osorio_CV.pdf'
   cvUrl: null,
   bio: [
@@ -48,11 +51,11 @@ export const perfil = {
 export const redes = [
   { nombre: 'LinkedIn', icono: 'linkedin', color: '#0A66C2', url: 'https://www.linkedin.com/in/rubentorres-dev' },
   { nombre: 'GitHub', icono: 'github', color: '#F0F6FC', url: 'https://github.com/rubentorres-dev' },
-  { nombre: 'Gmail', icono: 'gmail', color: '#EA4335', url: 'mailto:rt633659@gmail.com' },
+  { nombre: 'Gmail', icono: 'gmail', color: '#EA4335', url: `mailto:${perfil.correo}` },
   { nombre: 'WhatsApp', icono: 'whatsapp', color: '#25D366', url: 'https://wa.me/573245374597' },
   { nombre: 'Telegram', icono: 'telegram', color: '#26A5E4', url: 'https://t.me/rubentorres_DEV' },
-  { nombre: 'Instagram', icono: 'instagram', color: '#E1306C', url: null },
-  { nombre: 'Facebook', icono: 'facebook', color: '#1877F2', url: null },
+  { nombre: 'Instagram', icono: 'instagram', color: '#E1306C', url: perfil.instagram ? `https://www.instagram.com/${perfil.instagram}` : null },
+  { nombre: 'Facebook', icono: 'facebook', color: '#1877F2', url: perfil.facebook ? `https://www.facebook.com/${perfil.facebook}` : null },
 ];
 
 // Orden de navegación con las flechas ← → del teclado

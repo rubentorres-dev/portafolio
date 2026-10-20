@@ -1,5 +1,16 @@
 # Historial de cambios
 
+## v27 · 20 de octubre de 2026
+- Se quitaron los botones grandes de Instagram, Facebook y Gmail (repetían los íconos de abajo). Quedan WhatsApp y Telegram.
+- Los 7 íconos de redes (Contacto y pie de página) van **siempre en una sola fila**, uno al lado del otro, y se achican solos en pantallas pequeñas. Instagram y Facebook quedan "próximamente" hasta poner el usuario en `perfil.instagram` / `perfil.facebook`.
+- Tarjetas de proyecto con `contain: inline-size`: su contenido (imagen, textos) ya no puede decidir el ancho; siempre se ajustan a la pantalla.
+- Probado en anchos 320, 360, 375, 390, 430, 768, 1024 y 1440 px en inicio, /proyectos y /proyectos/sgis: nada se sale de la pantalla.
+
+## v26 · 20 de octubre de 2026
+- **Arreglo definitivo del celular en Proyectos:** en iPhone (Safari) la imagen de 1200 px de la tarjeta destacada ensanchaba la columna y la tarjeta quedaba 3 veces más grande que la pantalla (por eso "se corría" y bajaba). Ahora la imagen va posicionada dentro de su caja (no puede ensanchar nada), la rejilla usa `grid-cols-1` (columna que nunca supera la pantalla) y hay una regla global `.grid > * { min-width: 0 }` + `img { max-width: 100% }`.
+- Misma protección en la imagen de la página de detalle del proyecto.
+- **Botones de acción nuevos en Contacto:** Instagram, Facebook y Gmail (con sus colores). Instagram y Facebook aparecen como "pronto" hasta que pongas tu usuario en `perfil.instagram` / `perfil.facebook` de `frontend/src/data/content.js`; ahí se activan solos el botón y el ícono.
+
 ## v25 · 20 de octubre de 2026
 
 - **Celulares: la página ya no se corre sola ni queda en blanco en Proyectos.**

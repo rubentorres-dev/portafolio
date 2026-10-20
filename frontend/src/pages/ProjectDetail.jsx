@@ -28,7 +28,7 @@ export default function ProjectDetail() {
       </Reveal>
       {p.imagen && (
         <Reveal delay={0.2} className="mt-12 overflow-hidden rounded-tarjeta border border-white/10">
-          <img src={p.imagen} alt={p.titulo} className="w-full" onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
+          <img src={p.imagen} alt={p.titulo} width="1200" height="675" className="block h-auto w-full max-w-full" onError={(e) => { e.currentTarget.parentElement.style.display = 'none'; }} />
         </Reveal>
       )}
       <Reveal delay={0.3} className="mt-12 grid gap-10 md:grid-cols-[2fr_1fr]">
