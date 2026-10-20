@@ -7,7 +7,8 @@
 //  3. Disco negro con neblina azul en la parte baja.
 //  4. Anillo fino con zonas brillantes que giran (la luz "corre" por la curva).
 //  5. Segundo anillo girando al revés: destellos cuando se cruzan (solo escritorio).
-//  6. Tres cometas con estela que recorren el borde.
+//  6. Dos ondas de luz suaves que giran a distinto ritmo y "respiran": efecto de agua.
+//  7. Tres cometas con estela que recorren el borde.
 import { useEffect, useRef, useState } from 'react';
 
 export default function Eclipse({ className = '', style }) {
@@ -30,6 +31,8 @@ export default function Eclipse({ className = '', style }) {
       <div className="ev-glow-fijo ev-parpadeo" />
       <div className="ev-disco" />
       <div className="ev-borde ev-gira" />
+      <div className="ev-agua ev-agua-1" />
+      <div className="ev-agua ev-agua-2" />
       <div className="ev-borde-2 ev-gira-inverso" />
       <div className="ev-cometa ev-gira-cometa" />
       <div className="ev-cometa ev-gira-cometa" style={{ animationDelay: '-2.3s' }} />

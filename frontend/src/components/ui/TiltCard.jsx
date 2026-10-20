@@ -2,7 +2,15 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
 
+const TACTIL = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+
 export default function TiltCard({ children, className = '', intensidad = 8 }) {
+  // En celulares no hay cursor: tarjeta normal, sin capas 3D (más estable al desplazar).
+  if (TACTIL) return <div className={`group relative ${className}`}>{children}</div>;
+  return <TiltCardEscritorio className={className} intensidad={intensidad}>{children}</TiltCardEscritorio>;
+}
+
+function TiltCardEscritorio({ children, className, intensidad }) {
   const ref = useRef(null);
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);

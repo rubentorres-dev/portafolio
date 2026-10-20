@@ -1,5 +1,15 @@
 # Historial de cambios
 
+## v25 · 20 de octubre de 2026
+
+- **Celulares: la página ya no se corre sola ni queda en blanco en Proyectos.**
+  - Se quitó `overflow` de `<body>` (con `overflow` en html y body a la vez el iPhone desplaza la página de forma errática); queda solo `overflow-x: clip` en `<html>`.
+  - En pantallas táctiles el scroll es el nativo del teléfono (Lenis solo con mouse/trackpad).
+  - Las tarjetas de proyectos no usan inclinación 3D en táctil y aparecen una sola vez, sin animación de "layout".
+  - Menos memoria gráfica en celulares (brillo del agujero negro y de la media luna más cortos).
+- **Botón ☰ con Liquid Glass**: burbuja de vidrio con reflejo; las 3 rayas se convierten en ✕. Menú desplegable de vidrio más denso.
+- **Agujero negro con efecto agua**: dos ondas de luz suaves que giran a distinto ritmo y "respiran", sin filtros (solo transform).
+
 ## v24 · 20 de octubre de 2026
 
 - **Agujero negro: vuelve la luz infinita que recorre la curva.** En la v22/v23 una línea de optimización (`transform: translateZ(0)`) anulaba el giro y el anillo se veía como una imagen fija. Ahora gira de nuevo, igual de fluido y sin filtros.

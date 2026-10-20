@@ -16,19 +16,19 @@
     background: var(--noche); color-scheme: dark;
     touch-action: pan-x pan-y;
     -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
-    overflow-x: hidden; overflow-x: clip;
-    overscroll-behavior: none;
+    /* Solo "clip" en <html>: recorta lo que sobresale sin crear otra barra de desplazamiento.
+       (overflow hidden en html Y body a la vez hace que el iPhone desplace la página de forma errática) */
+    overflow-x: clip;
+    overscroll-behavior-y: none;
   }
   /* Monitores muy grandes (ultrawide, 4K, 36"+): todo crece en proporción, como un zoom.
      Las medidas están en rem, así que al subir la fuente base se escala la página entera. */
   @media (min-width: 2200px) { html { font-size: clamp(16px, 0.74vw, 30px); } }
   body {
     @apply bg-noche font-sans text-texto antialiased;
-    overflow-x: hidden; overflow-x: clip; max-width: 100%;
-    overscroll-behavior: none;
+    max-width: 100%;
     -webkit-tap-highlight-color: transparent;
   }
-  #root { overflow-x: clip; }
   /* Campos de texto con 16 px mínimo: así el iPhone no hace zoom solo al escribir */
   input, textarea, select { font-size: max(16px, 1em); }
   ::selection { background: rgba(124, 58, 237, 0.5); color: #fff; }
@@ -137,6 +137,35 @@
   -webkit-backdrop-filter: blur(22px) saturate(180%);
   border: 1px solid rgba(255,255,255,0.14);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(255,255,255,0.05), 0 10px 40px rgba(0,0,0,0.35);
+}
+/* Botón ☰ de Liquid Glass: burbuja de vidrio con brillo, las 3 rayas se convierten en ✕ */
+.boton-vidrio {
+  position: relative; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 9999px;
+  background: radial-gradient(120% 120% at 30% 15%, rgba(255,255,255,.32), rgba(255,255,255,.06) 45%, rgba(167,139,250,.14) 100%);
+  border: 1px solid rgba(255,255,255,.28);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.55), inset 0 -2px 6px rgba(124,58,237,.25), 0 6px 18px rgba(0,0,0,.35), 0 0 18px rgba(124,58,237,.25);
+  -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+  transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .3s;
+}
+.boton-vidrio:active { transform: scale(.9); }
+.boton-vidrio::after { /* reflejo curvo de la parte de arriba */
+  content: ''; position: absolute; inset: 2px 6px auto 6px; height: 45%; border-radius: 9999px 9999px 40% 40%;
+  background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,0)); pointer-events: none;
+}
+.boton-vidrio span {
+  position: absolute; left: 50%; top: 50%; width: 18px; height: 2px; border-radius: 2px; background: #fff;
+  translate: -50% -50%; transition: transform .35s cubic-bezier(.22,1,.36,1), opacity .2s;
+}
+.boton-vidrio span:nth-child(1) { transform: translateY(-6px); }
+.boton-vidrio span:nth-child(3) { transform: translateY(6px); }
+.boton-vidrio.abierto { box-shadow: inset 0 1px 1px rgba(255,255,255,.55), inset 0 -2px 6px rgba(124,58,237,.35), 0 6px 18px rgba(0,0,0,.35), 0 0 26px rgba(167,139,250,.55); }
+.boton-vidrio.abierto span:nth-child(1) { transform: rotate(45deg); }
+.boton-vidrio.abierto span:nth-child(2) { opacity: 0; transform: scaleX(.2); }
+.boton-vidrio.abierto span:nth-child(3) { transform: rotate(-45deg); }
+/* Menú desplegable: vidrio más denso para que se lea bien sobre cualquier fondo */
+.menu-vidrio {
+  background: linear-gradient(160deg, rgba(40,32,90,.72), rgba(10,10,40,.62));
+  -webkit-backdrop-filter: blur(26px) saturate(190%); backdrop-filter: blur(26px) saturate(190%);
 }
 .pastilla-vidrio {
   background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(167,139,250,0.14));
@@ -296,6 +325,36 @@
   mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
 }
 
+/* Efecto AGUA: dos ondas de luz anchas y suaves que giran a distinto ritmo (una acelera y frena)
+   y se expanden un poco, como reflejos sobre agua. Solo usan transform → cero repintado. */
+.ev-agua {
+  inset: -30px; opacity: .55;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 64px), rgba(0,0,0,.35) calc(100% - 44px), #000 calc(100% - 32px), rgba(0,0,0,.4) calc(100% - 20px), transparent 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 64px), rgba(0,0,0,.35) calc(100% - 44px), #000 calc(100% - 32px), rgba(0,0,0,.4) calc(100% - 20px), transparent 100%);
+  will-change: transform; backface-visibility: hidden;
+}
+.ev-agua-1 {
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(224,231,255,.9) 30deg, rgba(129,140,248,.5) 60deg, transparent 95deg,
+    transparent 160deg, rgba(196,181,253,.75) 200deg, transparent 240deg, transparent 290deg, rgba(165,243,252,.55) 320deg, transparent 350deg);
+  animation: aguaOla 9s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+.ev-agua-2 {
+  opacity: .4;
+  background: conic-gradient(from 120deg, transparent 0deg, rgba(255,255,255,.8) 22deg, transparent 55deg, transparent 140deg,
+    rgba(167,139,250,.7) 175deg, transparent 215deg, transparent 260deg, rgba(199,210,254,.7) 300deg, transparent 335deg);
+  animation: aguaOla2 13s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+@keyframes aguaOla {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(200deg) scale(1.012); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes aguaOla2 {
+  0%   { transform: rotate(0deg) scale(1.01); }
+  50%  { transform: rotate(-170deg) scale(1); }
+  100% { transform: rotate(-360deg) scale(1.01); }
+}
+
 /* 6. Cometas: arco corto con estela y punta blanca, con su propio resplandor en la máscara */
 .ev-cometa {
   inset: -20px;
@@ -322,6 +381,10 @@
 /* Celulares y tablets: menos capas girando */
 @media (max-width: 1024px) {
   .ev-borde-2, .ev-cometa-3 { display: none; }
+  /* Menos memoria gráfica en celulares: el brillo fijo es más corto (antes se extendía 350 px) */
+  .ev-glow-fijo { box-shadow: 0 0 0 1px rgba(255,255,255,.6), 0 0 6px 1px #fff, 0 0 20px 4px rgba(199,210,254,.85),
+    0 0 50px 12px rgba(129,140,248,.65), 0 0 100px 26px rgba(79,70,229,.45); }
+  .luna > .luna-fondo { inset: -60%; }
 }
 
 /* Filtros de proyectos con neón de su color */

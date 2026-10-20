@@ -1,4 +1,3 @@
-import { VISTA } from '../data/animacion';
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../services/api';
@@ -41,9 +40,9 @@ export default function FeaturedProjects({ todos = false }) {
 
         {(
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence initial={false}>
               {lista.map((p, i) => (
-                <motion.div key={p.slug} layout initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={VISTA} exit={{ opacity: 0, scale: 0.9 }}
+                <motion.div key={p.slug} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.05 }} exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.5, delay: i * 0.06 }}>
                   <ProjectCard p={p} destacada={i === 0 && filtro === 'Todos'} />
                 </motion.div>

@@ -73,16 +73,18 @@ export default function Navbar() {
           {perfil.cvUrl
             ? <Button href={perfil.cvUrl} download className="hidden !px-5 !py-2.5 md:inline-flex">Descargar CV</Button>
             : <Button onClick={(e) => ir(e, ENLACES[5])} className="hidden !px-5 !py-2.5 md:inline-flex">Hablemos</Button>}
-          <button aria-label="Abrir menú" aria-expanded={abierto} onClick={() => setAbierto((v) => !v)} className="grid h-10 w-10 place-items-center rounded-full text-xl md:hidden">
-            {abierto ? '✕' : '☰'}
+          <button aria-label={abierto ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={abierto} onClick={() => setAbierto((v) => !v)}
+            className={`boton-vidrio md:hidden ${abierto ? 'abierto' : ''}`}>
+            <span /><span /><span />
           </button>
         </div>
       </motion.nav>
 
       <AnimatePresence>
         {abierto && (
-          <motion.ul initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
-            className="vidrio-liquido absolute inset-x-4 top-20 flex flex-col gap-1 rounded-3xl p-4 md:hidden">
+          <motion.ul initial={{ opacity: 0, y: -12, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -12, scale: 0.97 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="vidrio-liquido menu-vidrio absolute inset-x-4 top-20 flex origin-top-right flex-col gap-1 rounded-3xl p-3 md:hidden">
             {ENLACES.map((l) => (
               <li key={l.texto}>
                 <a href={l.ruta || `/#${l.id}`} onClick={(e) => ir(e, l)}

@@ -24,7 +24,8 @@ export function scrollA(destino) {
 
 export default function useLenis() {
   useEffect(() => {
-    if (prefiereMenosMovimiento()) return undefined;
+    // En celulares y tablets el scroll nativo es el más fluido y estable: Lenis solo con mouse/trackpad.
+    if (prefiereMenosMovimiento() || window.matchMedia('(pointer: coarse)').matches) return undefined;
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
     instancia = lenis;
     lenis.on('scroll', ScrollTrigger.update);
