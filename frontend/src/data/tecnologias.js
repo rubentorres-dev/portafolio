@@ -71,7 +71,7 @@ export const tecnologias = [
   {"nombre": "Pagos Wompi", "categoria": "Mensajería y seguridad", "color": "#2CD5A0", "logo": null, "invertir": false},
   {"nombre": "AWS", "categoria": "Cloud y DevOps", "color": "#FF9900", "logo": "/tech/aws.svg", "invertir": false},
   {"nombre": "Azure", "categoria": "Cloud y DevOps", "color": "#0078D4", "logo": "/tech/azure.svg", "invertir": false},
-  {"nombre": "Google Cloud", "categoria": "Cloud y DevOps", "color": "#4285F4", "logo": "/tech/googlecloud.svg", "invertir": false},
+  {"nombre": "Google Cloud", "categoria": "Cloud y DevOps", "color": "#4285F4", "logo": "/tech/gcp.svg", "invertir": false},
   {"nombre": "Firebase", "categoria": "Cloud y DevOps", "color": "#FFCA28", "logo": "/tech/firebase.svg", "invertir": false},
   {"nombre": "Vercel", "categoria": "Cloud y DevOps", "color": "#FFFFFF", "logo": "/tech/vercel.svg", "invertir": true},
   {"nombre": "Heroku", "categoria": "Cloud y DevOps", "color": "#9E7CFF", "logo": "/tech/heroku.svg", "invertir": false, "claro": true},

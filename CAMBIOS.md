@@ -1,5 +1,11 @@
 # Historial de cambios
 
+## v24 · 20 de octubre de 2026
+
+- **Agujero negro: vuelve la luz infinita que recorre la curva.** En la v22/v23 una línea de optimización (`transform: translateZ(0)`) anulaba el giro y el anillo se veía como una imagen fija. Ahora gira de nuevo, igual de fluido y sin filtros.
+- **Celulares: la pantalla ya no "se corre" en Proyectos.** Los proyectos se muestran de inmediato (sin el esqueleto de carga que cambiaba el alto de la página) y el borde animado de la tarjeta destacada ya no usa una capa más grande que la tarjeta.
+- **Logo de Google Cloud**: el archivo se renombró a `gcp.svg` (algunos bloqueadores de anuncios bloqueaban el nombre `googlecloud`).
+
 ## v23 · 20 de octubre de 2026
 
 - Sobre mí: nuevo panel **2026 · auxiliar de sistemas** (4 paneles: 2×2 en celular, en fila en PC).

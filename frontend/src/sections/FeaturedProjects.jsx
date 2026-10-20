@@ -2,6 +2,7 @@ import { VISTA } from '../data/animacion';
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { api } from '../services/api';
+import { proyectosRespaldo } from '../data/content';
 import useFetch from '../hooks/useFetch';
 import SectionTitle from '../components/ui/SectionTitle';
 import ProjectCard from '../components/ProjectCard';
@@ -10,7 +11,10 @@ import Button from '../components/ui/Button';
 const FILTROS = [['Todos', '#A78BFA'], ['Java', '#ED8B00'], ['PHP', '#777BB4'], ['JavaScript', '#F7DF1E'], ['Python', '#3776AB'], ['n8n', '#EA4B71'], ['ESP32', '#E7352C']];
 
 export default function FeaturedProjects({ todos = false }) {
-  const { data: proyectos, cargando } = useFetch(() => api.proyectos(), []);
+  // Se muestran de inmediato los proyectos de respaldo y se reemplazan cuando responde la API:
+  // así la sección no cambia de alto mientras carga (en celular eso hacía que la pantalla "se corriera").
+  const { data } = useFetch(() => api.proyectos(), []);
+  const proyectos = data || proyectosRespaldo;
   const [filtro, setFiltro] = useState('Todos');
 
   const lista = useMemo(() => {
@@ -35,10 +39,8 @@ export default function FeaturedProjects({ todos = false }) {
           </div>
         </div>
 
-        {cargando ? (
-          <div className="mt-12 grid gap-6 md:grid-cols-3">{[0, 1, 2].map((i) => <div key={i} className="tarjeta h-96 animate-pulse" />)}</div>
-        ) : (
-          <motion.div layout className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {(
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
               {lista.map((p, i) => (
                 <motion.div key={p.slug} layout initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={VISTA} exit={{ opacity: 0, scale: 0.9 }}
@@ -48,7 +50,7 @@ export default function FeaturedProjects({ todos = false }) {
               ))}
             </AnimatePresence>
             {lista.length === 0 && <p className="subtexto col-span-full">Aún no hay proyectos con este filtro. ¡Vienen en camino!</p>}
-          </motion.div>
+          </div>
         )}
 
         {!todos && <div className="mt-12 text-center"><Button variante="secundario" to="/proyectos">Ver todos los proyectos →</Button></div>}
