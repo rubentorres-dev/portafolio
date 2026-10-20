@@ -53,12 +53,13 @@ export default function Hero() {
           style={{ fontSize: 'clamp(1.6rem, 4.6vw, 4.5rem)', letterSpacing: '0.3em', paddingLeft: '0.3em' }}>
           {caracteres.map((l, i) => (
             <motion.span key={i} className="inline-block"
-              initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={VISTA}
+              initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }} viewport={VISTA}
               transition={{ duration: 1.1, delay: 0.5 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>
               <span className="h-letra-scroll inline-block will-change-transform">
                 {l === '-'
                   ? <span className="separador-luna mx-[0.35em] inline-block align-middle" />
-                  : <span className="letra-luna inline-block" style={{ animationDelay: `${i * 0.3}s` }}>{l}</span>}
+                  : <span className="letra-brillo" data-l={l}><span className="letra-luna inline-block" style={{ animationDelay: `${i * 0.3}s` }}>{l}</span></span>}
               </span>
             </motion.span>
           ))}

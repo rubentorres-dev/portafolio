@@ -1,6 +1,8 @@
 // Páginas legales: aviso legal, términos y condiciones, política de privacidad (Ley 1581 de 2012, Colombia) y cookies.
 // Revisa y ajusta estos textos; son una base general, no asesoría legal.
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { cambiarPreferenciaCookies, leerConsentimiento } from '../components/layout/CookieNotice';
 import { perfil } from '../data/content';
 import Reveal from '../components/ui/Reveal';
 import useSeo from '../hooks/useSeo';
@@ -49,8 +51,9 @@ const TEXTOS = {
   cookies: {
     titulo: 'Política de cookies',
     secciones: [
-      ['¿Usa cookies este sitio?', 'No se usan cookies de publicidad ni de seguimiento. La analítica (si está activa) es anónima y no usa cookies.'],
-      ['Almacenamiento local', 'El navegador guarda una única preferencia: que ya cerraste el aviso de cookies. No contiene datos personales.'],
+      ['¿Usa cookies este sitio?', 'Sí, pero solo para que el sitio funcione bien y recuerde tus preferencias. No se usan cookies de publicidad ni se venden datos.'],
+      ['Tu decisión', 'Al entrar por primera vez verás un aviso para Aceptar o Rechazar. Si rechazas, el sitio funciona igual y no se activa ninguna herramienta opcional (como analítica de visitas). Puedes cambiar tu decisión cuando quieras con el botón de abajo.'],
+      ['Almacenamiento local', 'El navegador guarda tu elección (aceptadas o rechazadas) para no volver a preguntarte. No contiene datos personales.'],
       ['Servicios de terceros', 'Cloudflare Turnstile, que protege el formulario contra bots, puede usar datos técnicos estrictamente necesarios para esa verificación.'],
       ['Cómo borrarlas', 'Puedes borrar los datos del sitio desde la configuración de privacidad de tu navegador en cualquier momento.'],
     ],
@@ -70,6 +73,24 @@ export default function Legal({ tipo }) {
       <div className="prosa mt-10">
         {t.secciones.map(([h, p]) => (<div key={h}><h2>{h}</h2><p>{p}</p></div>))}
       </div>
+      {tipo === 'cookies' && <PreferenciaCookies />}
     </article>
+  );
+}
+
+// Muestra la elección actual y permite volver a decidir.
+function PreferenciaCookies() {
+  const [estado, setEstado] = useState(leerConsentimiento());
+  useEffect(() => {
+    const act = () => setEstado(leerConsentimiento());
+    window.addEventListener('cookies:cambio', act);
+    return () => window.removeEventListener('cookies:cambio', act);
+  }, []);
+  const texto = estado === 'aceptadas' ? 'Aceptaste las cookies.' : estado === 'rechazadas' ? 'Rechazaste las cookies.' : 'Todavía no has elegido.';
+  return (
+    <div className="mt-10 flex flex-col items-start gap-3 rounded-tarjeta border border-white/10 bg-white/[0.03] p-6 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-texto-suave">Tu preferencia actual: <b className="text-white">{texto}</b></p>
+      <button onClick={cambiarPreferenciaCookies} className="btn-secundario !px-5 !py-2">Cambiar mi preferencia</button>
+    </div>
   );
 }

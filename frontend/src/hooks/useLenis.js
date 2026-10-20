@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { prefiereMenosMovimiento } from './useReducedMotion';
 
 gsap.registerPlugin(ScrollTrigger);
+// En celulares la barra del navegador aparece/desaparece al bajar: no recalcular todo por eso (evita tirones).
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 let instancia = null;
 

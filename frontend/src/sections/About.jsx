@@ -48,10 +48,10 @@ export default function About() {
             <p className="ab-txt etiqueta">Sobre mí</p>
             <h2 className="ab-txt mt-3 text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl xl:text-6xl">Código limpio.<br /><span className="degradado">Sistemas reales.</span></h2>
             {perfil.bio.map((p, i) => <p key={i} className="ab-txt subtexto mt-3 !text-[15px] xl:!text-base">{p}</p>)}
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {perfil.datos.map((d, i) => (
                 <div key={d.texto} className="ab-txt tech-tile rounded-tarjeta border border-white/10 bg-white/[0.03] p-4"
-                  style={{ '--neon': ['#A78BFA', '#22D3EE', '#34D399'][i % 3] }}>
+                  style={{ '--neon': ['#A78BFA', '#22D3EE', '#F472B6', '#34D399'][i % 4] }}>
                   <b className="dato-valor block text-2xl transition md:text-3xl">{d.valor}</b>
                   <small className="text-xs text-texto-suave md:text-sm">{d.texto}</small>
                 </div>

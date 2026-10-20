@@ -10,11 +10,27 @@
 }
 
 @layer base {
-  html { background: var(--noche); color-scheme: dark; }
+  /* La página no se puede ampliar, alejar ni arrastrar hacia los lados (celulares y tablets).
+     pan-x pan-y = se permite desplazar, pero no pellizcar para hacer zoom. */
+  html {
+    background: var(--noche); color-scheme: dark;
+    touch-action: pan-x pan-y;
+    -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
+    overflow-x: hidden; overflow-x: clip;
+    overscroll-behavior: none;
+  }
   /* Monitores muy grandes (ultrawide, 4K, 36"+): todo crece en proporción, como un zoom.
      Las medidas están en rem, así que al subir la fuente base se escala la página entera. */
   @media (min-width: 2200px) { html { font-size: clamp(16px, 0.74vw, 30px); } }
-  body { @apply bg-noche font-sans text-texto antialiased; overflow-x: hidden; }
+  body {
+    @apply bg-noche font-sans text-texto antialiased;
+    overflow-x: hidden; overflow-x: clip; max-width: 100%;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #root { overflow-x: clip; }
+  /* Campos de texto con 16 px mínimo: así el iPhone no hace zoom solo al escribir */
+  input, textarea, select { font-size: max(16px, 1em); }
   ::selection { background: rgba(124, 58, 237, 0.5); color: #fff; }
   :focus-visible { outline: 2px solid var(--brillo); outline-offset: 3px; border-radius: 8px; }
   html.lenis, html.lenis body { height: auto; }
@@ -73,18 +89,27 @@
   animation: girar 14s linear infinite;
 }
 
-.borde-animado {
-  background: linear-gradient(#0d0d2a, #0d0d2a) padding-box,
-    conic-gradient(from var(--angulo, 0deg), #a78bfa, #4f46e5 30%, transparent 55%, transparent 80%, #a78bfa) border-box;
-  border: 1px solid transparent;
-  animation: borde 6s linear infinite;
+.borde-animado { position: relative; isolation: isolate; padding: 1px; background: transparent; }
+.borde-animado::before {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 220%; aspect-ratio: 1; z-index: -2;
+  translate: -50% -50%; pointer-events: none;
+  background: conic-gradient(#a78bfa, #4f46e5 30%, transparent 55%, transparent 80%, #a78bfa);
+  animation: girar 6s linear infinite; will-change: transform;
+}
+.borde-animado::after {
+  content: ''; position: absolute; inset: 1px; z-index: -1; pointer-events: none;
+  border-radius: calc(var(--radio-tarjeta, 28px) - 1px); background: #0d0d2a;
 }
 
 @property --angulo { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 @keyframes borde { to { --angulo: 360deg; } }
 @keyframes girar { to { transform: rotate(360deg); } }
 @keyframes parpadeo { 50% { opacity: 0; } }
-.cursor-texto { animation: parpadeo 1s steps(1) infinite; }
+.cursor-texto { display: inline-block; animation: parpadeoSuave 1.05s ease-in-out infinite; will-change: opacity; }
+@keyframes parpadeoSuave { 0%, 45% { opacity: 1; } 55%, 100% { opacity: 0; } }
+/* Cada letra nueva de las frases entra con un fundido corto (escritura más fluida) */
+.tw-letra { display: inline-block; white-space: pre; animation: twEntra .32s cubic-bezier(.22,1,.36,1) both; }
+@keyframes twEntra { from { opacity: 0; transform: translateY(.18em); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -128,7 +153,7 @@
   filter: blur(4px);
 }
 .respira { animation: respirar 5s ease-in-out infinite; }
-@keyframes respirar { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: .82; filter: brightness(1.25); } }
+@keyframes respirar { 0%, 100% { opacity: 1; } 50% { opacity: .82; } }
 
 /* Nombre con media luna de luz violeta que recorre cada letra (automático) */
 .letra-luna {
@@ -138,8 +163,15 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 8px rgba(168,85,247,.95)) drop-shadow(0 0 24px rgba(124,58,237,.85)) drop-shadow(0 0 60px rgba(109,40,217,.55));
+  position: relative; transform: translateZ(0); /* capa propia: solo se repinta la letra, no el brillo */
   animation: luna 3.8s ease-in-out infinite alternate;
+}
+/* Brillo de cada letra: copia estática detrás (antes eran 3 filtros que se recalculaban en cada cuadro) */
+.letra-brillo { position: relative; display: inline-block; }
+.letra-brillo::before {
+  content: attr(data-l); position: absolute; inset: 0; pointer-events: none;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(168,85,247,.95), 0 0 24px rgba(124,58,237,.85), 0 0 60px rgba(109,40,217,.55);
 }
 @keyframes luna { from { background-position: 0% 15%; } to { background-position: 100% 85%; } }
 
@@ -168,6 +200,8 @@
   background: conic-gradient(from var(--angulo, 0deg), #4285f4, #ea4335, #fbbc05, #34a853, #a855f7, #4285f4);
   filter: blur(18px); opacity: 0; transition: opacity .4s; animation: borde 3s linear infinite;
 }
+.neon-google::before, .neon-google::after { animation-play-state: paused; }
+.neon-google:hover::before, .neon-google:hover::after { animation-play-state: running; }
 .neon-google:hover::before { opacity: 1; }
 .neon-google:hover::after { opacity: .35; }
 
@@ -203,29 +237,34 @@
 }
 @keyframes deslizar { to { background-position: 200% 0; } }
 
-/* =====================  AGUJERO NEGRO v3  ===================== */
+/* =====================  AGUJERO NEGRO v4 (optimizado)  =====================
+   Mismo look que la v3, pero SIN filtros (blur / drop-shadow) sobre capas que giran.
+   Cada capa que gira lleva su degradado y su máscara adentro: el navegador la dibuja UNA vez
+   y luego la tarjeta gráfica solo la rota (60 fps, sin repintar). El brillo se logra con
+   máscaras difuminadas en lugar de filtros. */
 .eclipse-v3 { border-radius: 9999px; }
-.eclipse-v3 > *, .ev-bordes > *, .ev-cometa-blur > *, .ev-halo-blur > * { position: absolute; inset: 0; border-radius: 9999px; }
-
-/* Máscaras en forma de anillo (solo se ve el borde del círculo) */
-.ev-borde, .ev-cometa {
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
+.eclipse-v3 > * { position: absolute; inset: 0; border-radius: 9999px; pointer-events: none; }
+.eclipse-v3 .ev-gira, .eclipse-v3 .ev-gira-inverso, .eclipse-v3 .ev-gira-lento, .eclipse-v3 .ev-gira-cometa {
+  will-change: transform; backface-visibility: hidden; transform: translateZ(0);
 }
-/* El brillo va en el contenedor para que la máscara no lo recorte */
-.ev-bordes { filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 14px rgba(199,210,254,.95)) drop-shadow(0 0 34px rgba(99,102,241,.9)); }
+
+/* 1. Halo exterior difuso (antes: blur 30px sobre una capa que giraba) */
 .ev-halo {
-  inset: -3%;
+  inset: -7%;
   background: conic-gradient(from 0deg, #4f46e5, #818cf8, #3730a3, #6d28d9, #a5b4fc, #4338ca, #7c3aed, #4f46e5);
-  -webkit-mask: radial-gradient(farthest-side, transparent 88%, #000 94%, #000 96%, transparent 100%);
-  mask: radial-gradient(farthest-side, transparent 88%, #000 94%, #000 96%, transparent 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent 76%, rgba(0,0,0,.35) 84%, #000 89%, rgba(0,0,0,.55) 93%, transparent 100%);
+  mask: radial-gradient(farthest-side, transparent 76%, rgba(0,0,0,.35) 84%, #000 89%, rgba(0,0,0,.55) 93%, transparent 100%);
+  opacity: .7;
 }
-.ev-halo-blur { filter: blur(30px) saturate(1.4); }
 
-/* Brillo base que nunca se apaga */
-.ev-glow-fijo { box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 0 30px 6px rgba(165,160,255,.75), 0 0 110px 30px rgba(79,70,229,.6), 0 0 260px 90px rgba(67,56,202,.32); }
+/* 2. Brillo base que nunca se apaga (estático: se pinta una sola vez; solo cambia su opacidad) */
+.ev-glow-fijo {
+  box-shadow: 0 0 0 1px rgba(255,255,255,.6), 0 0 6px 1px #fff, 0 0 22px 4px rgba(199,210,254,.85),
+    0 0 60px 14px rgba(129,140,248,.7), 0 0 130px 36px rgba(79,70,229,.55), 0 0 260px 90px rgba(67,56,202,.3);
+  will-change: opacity;
+}
 
-/* Disco negro con neblina azul abajo, como en el video */
+/* 3. Disco negro con neblina azul abajo */
 .ev-disco {
   inset: 3px;
   background:
@@ -233,24 +272,40 @@
     radial-gradient(circle at 50% 50%, #04041a 0%, #04041a 80%, #0b0c45 93%, rgba(79,70,229,.55) 100%);
 }
 
-/* Anillo fino con zonas brillantes que recorren toda la curva */
+/* 4. Anillo con zonas brillantes que recorren la curva.
+   La capa se extiende 26px por fuera del borde: dos máscaras juntas dibujan
+   el filo nítido + su resplandor suave (lo que antes hacían 3 drop-shadow). */
 .ev-borde {
+  inset: -26px;
   background: conic-gradient(from 0deg,
     #6366f1 0deg, #ffffff 20deg, #c7d2fe 45deg, #4f46e5 80deg, #a5b4fc 120deg, #ffffff 150deg,
     #818cf8 185deg, #4338ca 220deg, #e0e7ff 255deg, #ffffff 275deg, #6366f1 310deg, #c4b5fd 340deg, #6366f1 360deg);
+  -webkit-mask:
+    radial-gradient(farthest-side, transparent calc(100% - 34px), #000 calc(100% - 31px), #000 calc(100% - 26px), transparent calc(100% - 25px)),
+    radial-gradient(farthest-side, transparent calc(100% - 46px), rgba(0,0,0,.1) calc(100% - 38px), rgba(0,0,0,.5) calc(100% - 30px), rgba(0,0,0,.42) calc(100% - 22px), rgba(0,0,0,.12) calc(100% - 10px), transparent 100%);
+  mask:
+    radial-gradient(farthest-side, transparent calc(100% - 34px), #000 calc(100% - 31px), #000 calc(100% - 26px), transparent calc(100% - 25px)),
+    radial-gradient(farthest-side, transparent calc(100% - 46px), rgba(0,0,0,.1) calc(100% - 38px), rgba(0,0,0,.5) calc(100% - 30px), rgba(0,0,0,.42) calc(100% - 22px), rgba(0,0,0,.12) calc(100% - 10px), transparent 100%);
 }
+/* 5. Segundo anillo al revés: destellos cuando se cruzan (solo en pantallas grandes) */
 .ev-borde-2 {
-  opacity: .6; mix-blend-mode: screen;
+  inset: 0; opacity: .55;
   background: conic-gradient(from 90deg, transparent 0deg, #ffffff 25deg, transparent 60deg, transparent 150deg, #c4b5fd 175deg, transparent 210deg, transparent 280deg, #ffffff 300deg, transparent 330deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
 }
 
-/* Cometas: un arco corto que va de transparente a blanco (estela + punta brillante) */
+/* 6. Cometas: arco corto con estela y punta blanca, con su propio resplandor en la máscara */
 .ev-cometa {
-  background: conic-gradient(from 0deg, transparent 0deg, transparent 285deg, rgba(124,58,237,.35) 320deg, rgba(196,181,253,.85) 350deg, #ffffff 358deg, transparent 360deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 7px), #000 calc(100% - 1px), transparent 100%);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 7px), #000 calc(100% - 1px), transparent 100%);
+  inset: -20px;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 285deg, rgba(124,58,237,.35) 320deg, rgba(196,181,253,.9) 350deg, #ffffff 358deg, transparent 360deg);
+  -webkit-mask:
+    radial-gradient(farthest-side, transparent calc(100% - 29px), #000 calc(100% - 27px), #000 calc(100% - 21px), transparent calc(100% - 20px)),
+    radial-gradient(farthest-side, transparent calc(100% - 52px), rgba(0,0,0,.45) calc(100% - 25px), transparent 100%);
+  mask:
+    radial-gradient(farthest-side, transparent calc(100% - 29px), #000 calc(100% - 27px), #000 calc(100% - 21px), transparent calc(100% - 20px)),
+    radial-gradient(farthest-side, transparent calc(100% - 52px), rgba(0,0,0,.45) calc(100% - 25px), transparent 100%);
 }
-.ev-cometa-blur { filter: blur(1.5px) drop-shadow(0 0 10px #fff) drop-shadow(0 0 22px #a78bfa); }
 
 /* Velocidades distintas para que nunca se vea repetitivo */
 .ev-gira { animation: girar 7s linear infinite; }
@@ -261,11 +316,11 @@
 @keyframes parpadeoLuz {
   0%, 100% { opacity: 1; } 18% { opacity: .82; } 32% { opacity: .97; } 47% { opacity: .78; } 63% { opacity: 1; } 80% { opacity: .88; }
 }
-.ev-gira, .ev-gira-inverso, .ev-gira-lento, .ev-gira-cometa { will-change: transform; }
-/* En celulares se aligera el efecto para cuidar batería y fluidez */
-@media (max-width: 768px) {
-  .ev-halo-blur { filter: blur(18px); }
-  .ev-borde-2 { display: none; }
+/* Fuera de pantalla las animaciones se pausan (ahorra batería y CPU) */
+.eclipse-pausado * { animation-play-state: paused !important; }
+/* Celulares y tablets: menos capas girando */
+@media (max-width: 1024px) {
+  .ev-borde-2, .ev-cometa-3 { display: none; }
 }
 
 /* Filtros de proyectos con neón de su color */

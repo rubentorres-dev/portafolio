@@ -1,5 +1,21 @@
 # Historial de cambios
 
+## v23 · 20 de octubre de 2026
+
+- Sobre mí: nuevo panel **2026 · auxiliar de sistemas** (4 paneles: 2×2 en celular, en fila en PC).
+- **Aviso de cookies con consentimiento**: "Este sitio usa cookies…" con botones **Aceptar** y **Rechazar**. La elección se recuerda; en `/cookies` se ve la preferencia actual y se puede cambiar. Política de cookies actualizada.
+- Incluye todo lo de la v22 (animaciones fluidas y bloqueo de zoom en celulares).
+
+## v22 · 20 de octubre de 2026
+
+- **Agujero negro mucho más fluido** (celular y PC): se quitaron los filtros (blur / drop-shadow) que se recalculaban en cada cuadro sobre capas que giran. Ahora el brillo sale de máscaras difuminadas y la tarjeta gráfica solo rota capas ya dibujadas. Se pausa cuando no está en pantalla. Mismo aspecto visual.
+- **RUBEN — DEV**: el brillo de cada letra es una copia estática detrás (antes eran 3 filtros animados).
+- **Frases que se escriben**: más rápidas y con cada letra entrando con un fundido suave; el cursor parpadea suave. No parten palabras al saltar de línea.
+- **Sin zoom ni desplazamiento lateral en celulares y tablets**: se bloquea pellizcar, el doble toque y el arrastre hacia los lados; la página ya no se puede "alejar".
+- Globo: puntos pre-dibujados (sin `shadowBlur` por punto) y se detiene cuando no se ve.
+- Bordes animados de tarjetas: giran con transform (sin repintar) y los del blog solo se mueven al pasar el cursor.
+- ScrollTrigger ignora el cambio de alto de la barra del navegador en celulares (menos tirones al bajar).
+
 ## v21 · 20 de octubre de 2026
 
 - El backend prefiere **IPv4** en las conexiones salientes (Telegram, Whapi, GitHub). Arregla el "Connect Timeout" en redes con IPv6 inestable.

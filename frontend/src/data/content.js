@@ -38,6 +38,7 @@ export const perfil = {
   datos: [
     { valor: '6.º', texto: 'semestre de Ingeniería de Sistemas' },
     { valor: '2025', texto: 'monitor académico de programación' },
+    { valor: '2026', texto: 'auxiliar de sistemas' },
     { valor: '100%', texto: 'disponible para trabajo remoto' },
   ],
 };

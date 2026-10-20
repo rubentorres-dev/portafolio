@@ -40,6 +40,18 @@ export default function Globe({ tamano = 560 }) {
     const ctx = capa.current.getContext('2d');
     const proyectados = new Float32Array(PUNTOS.length * 3);
 
+    // Puntos pre-dibujados con su brillo (antes se calculaba un "shadowBlur" por punto en cada cuadro).
+    const sprite = (color, glow, blur) => {
+      const s = 32, c = document.createElement('canvas');
+      c.width = c.height = s;
+      const g = c.getContext('2d');
+      g.shadowColor = glow; g.shadowBlur = blur; g.fillStyle = color;
+      g.beginPath(); g.arc(s / 2, s / 2, 4, 0, Math.PI * 2); g.fill();
+      return c;
+    };
+    const PUNTO_NORMAL = sprite('#ffffff', 'rgba(255,255,255,.55)', 6);
+    const PUNTO_ACTIVO = sprite('#d8ccff', 'rgba(167,139,250,.95)', 12);
+
     const dibujar = () => {
       const lado = capa.current.clientWidth;
       if (capa.current.width !== Math.round(lado * dpr)) {
@@ -63,15 +75,11 @@ export default function Globe({ tamano = 560 }) {
         const alfa = activo ? 1 : 1 - foco; // los demás se ocultan con suavidad
         if (alfa <= 0.01) return;
         ctx.globalAlpha = Math.min(1, fz * 1.6) * alfa;
-        ctx.fillStyle = activo ? '#d8ccff' : '#ffffff';
-        ctx.shadowColor = activo ? 'rgba(167,139,250,.95)' : 'rgba(255,255,255,.55)';
-        ctx.shadowBlur = activo ? 8 : 3;
-        ctx.beginPath();
-        ctx.arc(px, py, (capital ? 1.6 : 1) * punto * (activo ? 1.35 : 1), 0, Math.PI * 2);
-        ctx.fill();
+        // El sprite mide 32 px con un punto de radio 4 → escala = radio deseado / 4
+        const t = ((capital ? 1.6 : 1) * punto * (activo ? 1.35 : 1) / 4) * 32;
+        ctx.drawImage(activo ? PUNTO_ACTIVO : PUNTO_NORMAL, px - t / 2, py - t / 2, t, t);
       });
       ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
     };
 
     const globe = createGlobe(ref.current, {
@@ -165,7 +173,14 @@ export default function Globe({ tamano = 560 }) {
     el.addEventListener('pointerup', soltar);
     el.addEventListener('pointercancel', soltar);
     el.addEventListener('pointerleave', salir);
+    // Solo se dibuja mientras el globo está en pantalla (ahorra batería y libera la GPU para el resto).
+    const io = 'IntersectionObserver' in window
+      ? new IntersectionObserver(([e]) => globe.toggle(e.isIntersecting && !document.hidden), { rootMargin: '150px' })
+      : null;
+    io?.observe(caja.current);
+
     return () => {
+      io?.disconnect();
       globe.destroy();
       el.removeEventListener('pointerdown', bajar);
       el.removeEventListener('pointermove', mover);
