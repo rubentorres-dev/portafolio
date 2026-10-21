@@ -1,8 +1,8 @@
 // Íconos de redes sociales (Font Awesome, licencia libre) que se pintan del color de la marca al pasar el cursor.
-import { faLinkedinIn, faGithub, faWhatsapp, faInstagram, faFacebookF, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import { faLinkedinIn, faGithub, faWhatsapp, faInstagram, faFacebookF, faTelegram, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
-const ICONOS = { linkedin: faLinkedinIn, github: faGithub, whatsapp: faWhatsapp, instagram: faInstagram, facebook: faFacebookF, telegram: faTelegram, gmail: faEnvelope };
+const ICONOS = { linkedin: faLinkedinIn, github: faGithub, whatsapp: faWhatsapp, instagram: faInstagram, facebook: faFacebookF, telegram: faTelegram, tiktok: faTiktok, gmail: faEnvelope };
 
 export function Icono({ nombre, className = 'h-5 w-5' }) {
   const ic = ICONOS[nombre];

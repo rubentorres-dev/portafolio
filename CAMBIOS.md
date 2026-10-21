@@ -1,5 +1,18 @@
 # Historial de cambios
 
+## v32 · 21 de octubre de 2026
+- **TikTok activo:** el ícono abre tiktok.com/@rubentorres.dev (Contacto y pie de página) y se agregó a los datos para Google.
+- Incluye todo lo de v30 y v31 (Instagram activo, correo rubentorres.devs@gmail.com, ícono de TikTok). **Facebook activo:** abre el perfil Ruben Torres Dev (facebook.com/profile.php?id=61595662231133). Los 8 íconos ya tienen enlace.
+
+## v31 · 21 de octubre de 2026
+- **TikTok agregado** a los íconos de redes (Contacto y pie de página). Queda como "próximamente" hasta poner el usuario en `perfil.tiktok`.
+- Los 8 íconos siguen en una sola fila en todas las pantallas (probado desde 320 px).
+
+## v30 · 21 de octubre de 2026
+- **Instagram activo:** el ícono abre instagram.com/rubentorresdev (Contacto y pie de página) y se agregó a los datos para Google.
+- **Correo nuevo:** rubentorres.devs@gmail.com en el ícono de Gmail, en los datos para Google y en backend/.env.example (el anterior sigue funcionando como alias).
+- Facebook queda como "próximamente" hasta crear la página.
+
 ## v29 · 21 de octubre de 2026
 - **Globo en celular:** al tocar un país se muestra su nombre y bandera, igual que en el computador (los demás países se ocultan y el globo se detiene). Antes el navegador borraba la etiqueta en el mismo instante en que se levantaba el dedo.
 - Área de toque más grande para el dedo; la etiqueta queda visible hasta tocar otro país o fuera del globo, y nunca se sale de la pantalla.

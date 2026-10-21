@@ -26,12 +26,13 @@ export const perfil = {
     'Las grandes mentes siempre empiezan desde abajo.',
   ],
   ciudad: 'Barranquilla, Colombia',
-  correo: 'rt633659@gmail.com',
+  correo: 'rubentorres.devs@gmail.com',
   whatsapp: '573245374597', // formato internacional sin "+"
   telegram: 'rubentorres_DEV', // usuario de Telegram sin "@"
   // Cuando crees las cuentas, cambia null por el usuario (sin "@") y se activan solos los botones e íconos:
-  instagram: null, // ej. 'rubentorres.dev'  → instagram.com/rubentorres.dev
-  facebook: null,  // ej. 'rubentorres.dev'  → facebook.com/rubentorres.dev
+  instagram: 'rubentorresdev', // instagram.com/rubentorresdev
+  tiktok: 'rubentorres.dev', // tiktok.com/@rubentorres.dev
+  facebook: 'profile.php?id=61595662231133', // perfil Ruben Torres Dev (cámbialo por el usuario de la página cuando exista)
   // Pon tu CV en frontend/public/cv/ y cambia null por '/cv/Ruben_Torres_Osorio_CV.pdf'
   cvUrl: null,
   bio: [
@@ -55,6 +56,7 @@ export const redes = [
   { nombre: 'WhatsApp', icono: 'whatsapp', color: '#25D366', url: 'https://wa.me/573245374597' },
   { nombre: 'Telegram', icono: 'telegram', color: '#26A5E4', url: 'https://t.me/rubentorres_DEV' },
   { nombre: 'Instagram', icono: 'instagram', color: '#E1306C', url: perfil.instagram ? `https://www.instagram.com/${perfil.instagram}` : null },
+  { nombre: 'TikTok', icono: 'tiktok', color: '#FE2C55', url: perfil.tiktok ? `https://www.tiktok.com/@${perfil.tiktok}` : null },
   { nombre: 'Facebook', icono: 'facebook', color: '#1877F2', url: perfil.facebook ? `https://www.facebook.com/${perfil.facebook}` : null },
 ];
 
