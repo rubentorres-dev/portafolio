@@ -1,5 +1,6 @@
 // Reglas de validación y limpieza del formulario de contacto (Zod).
 const { z } = require('zod');
+const { VERSIONES } = require('../config/legal');
 
 // Limpia el texto: quita etiquetas HTML, caracteres de control y espacios sobrantes.
 const limpiar = (s) => s
@@ -16,8 +17,11 @@ const contactoSchema = z.object({
   correo: z.string().trim().toLowerCase().email('Correo no válido').max(120),
   asunto: z.string().transform(limpiar).pipe(z.string().max(120)).optional(),
   mensaje: texto(10, 2000, 'El mensaje debe tener al menos 10 caracteres'),
-  // Autorización previa y expresa para tratar los datos (Ley 1581 de 2012)
-  acepta: z.literal(true, { errorMap: () => ({ message: 'Debes aceptar la política de privacidad' }) }),
+  // Dos autorizaciones separadas: términos y tratamiento de datos (Ley 1581 de 2012).
+  aceptaTerminos: z.literal(true, { errorMap: () => ({ message: 'Debes aceptar los términos y condiciones' }) }),
+  aceptaPrivacidad: z.literal(true, { errorMap: () => ({ message: 'Debes autorizar el tratamiento de tus datos' }) }),
+  // Versión de los documentos que la persona vio; debe ser una versión conocida.
+  versionLegal: z.string().refine((v) => Object.hasOwn(VERSIONES, v), 'Versión de documentos no válida. Recarga la página.'),
 });
 
 module.exports = { contactoSchema, limpiar };

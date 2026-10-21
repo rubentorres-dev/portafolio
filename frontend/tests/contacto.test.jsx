@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { validar } from '../src/sections/Contact';
 
 describe('Validación del formulario de contacto', () => {
-  const ok = { nombre: 'Ana', correo: 'ana@empresa.com', asunto: '', mensaje: 'Quiero una página web.', acepta: true };
+  const ok = { nombre: 'Ana', correo: 'ana@empresa.com', asunto: '', mensaje: 'Quiero una página web.', aceptaTerminos: true, aceptaPrivacidad: true };
 
   it('acepta datos válidos', () => {
     expect(validar(ok)).toEqual({});
@@ -13,7 +13,12 @@ describe('Validación del formulario de contacto', () => {
   });
 
   it('exige aceptar la política de privacidad', () => {
-    expect(validar({ ...ok, acepta: false })).toHaveProperty('acepta');
+    expect(validar({ ...ok, aceptaPrivacidad: false })).toHaveProperty('aceptaPrivacidad');
+  });
+
+  it('exige aceptar los términos por separado', () => {
+    expect(validar({ ...ok, aceptaTerminos: false })).toHaveProperty('aceptaTerminos');
+    expect(validar({ ...ok, aceptaTerminos: false })).not.toHaveProperty('aceptaPrivacidad');
   });
 
   it('marca mensaje corto y nombre vacío', () => {

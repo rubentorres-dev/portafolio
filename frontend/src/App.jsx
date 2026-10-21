@@ -49,6 +49,7 @@ export default function App() {
             <Route path="/privacidad" element={<Legal tipo="privacidad" />} />
             <Route path="/cookies" element={<Legal tipo="cookies" />} />
             <Route path="/terminos" element={<Legal tipo="terminos" />} />
+            <Route path="/reembolsos" element={<Legal tipo="reembolsos" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

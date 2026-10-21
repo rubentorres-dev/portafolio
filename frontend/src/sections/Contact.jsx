@@ -8,15 +8,17 @@ import Button from '../components/ui/Button';
 import Reveal from '../components/ui/Reveal';
 import SocialIcon, { Icono } from '../components/ui/SocialIcon';
 import Turnstile, { turnstileActivo } from '../components/ui/Turnstile';
+import { VERSION_LEGAL } from '../data/legal';
 
-const VACIO = { nombre: '', correo: '', asunto: '', mensaje: '', sitio_web: '', acepta: false };
+const VACIO = { nombre: '', correo: '', asunto: '', mensaje: '', sitio_web: '', aceptaTerminos: false, aceptaPrivacidad: false };
 
 export function validar(f) {
   const e = {};
   if (f.nombre.trim().length < 2) e.nombre = 'Escribe tu nombre';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.correo = 'Correo no válido';
   if (f.mensaje.trim().length < 10) e.mensaje = 'El mensaje debe tener al menos 10 caracteres';
-  if (!f.acepta) e.acepta = 'Debes aceptar la política de privacidad';
+  if (!f.aceptaTerminos) e.aceptaTerminos = 'Debes aceptar los términos y condiciones';
+  if (!f.aceptaPrivacidad) e.aceptaPrivacidad = 'Debes autorizar el tratamiento de tus datos';
   return e;
 }
 
@@ -44,7 +46,8 @@ export default function Contact({ asuntoInicial = '' }) {
     if (turnstileActivo && !token) { setEstado('error'); setAviso('Completa la verificación de seguridad'); return; }
     setEstado('enviando');
     try {
-      await api.contacto({ ...form, turnstile_token: token });
+      // Se envía la versión de los documentos que la persona vio y aceptó (queda registrada en el servidor).
+      await api.contacto({ ...form, acepta: true, versionLegal: VERSION_LEGAL, turnstile_token: token });
       setForm(VACIO);
       navigate('/gracias');
     } catch (err) {
@@ -85,15 +88,25 @@ export default function Contact({ asuntoInicial = '' }) {
             <Campo nombre="correo" etiqueta="Correo" tipo="email" valor={form.correo} cambiar={cambiar} error={errores.correo} auto="email" />
             <Campo nombre="asunto" etiqueta="Asunto (opcional)" valor={form.asunto} cambiar={cambiar} error={errores.asunto} />
             <Campo nombre="mensaje" etiqueta="Cuéntame sobre tu proyecto" valor={form.mensaje} cambiar={cambiar} error={errores.mensaje} area />
-            <label className={`casilla-legal ${errores.acepta ? 'casilla-error' : ''}`}>
-              <input type="checkbox" name="acepta" checked={form.acepta} onChange={cambiar} aria-invalid={Boolean(errores.acepta)} />
+            {/* Dos autorizaciones separadas. Los enlaces abren en otra pestaña para no perder lo escrito. */}
+            <label className={`casilla-legal ${errores.aceptaTerminos ? 'casilla-error' : ''}`}>
+              <input type="checkbox" name="aceptaTerminos" checked={form.aceptaTerminos} onChange={cambiar} aria-invalid={Boolean(errores.aceptaTerminos)} />
               <span>
-                Acepto la <Link to="/privacidad" className="underline hover:text-white">política de privacidad</Link> y
-                los <Link to="/terminos" className="underline hover:text-white">términos y condiciones</Link>, y autorizo
-                el tratamiento de mis datos para responder mi mensaje.
+                He leído y acepto los{' '}
+                <Link to="/terminos" target="_blank" rel="noopener" className="underline hover:text-white">términos y condiciones</Link>.
               </span>
             </label>
-            {errores.acepta && <p className="-mt-2 mb-3 text-xs text-rose-300">{errores.acepta}</p>}
+            {errores.aceptaTerminos && <p className="-mt-2 mb-3 text-xs text-rose-300">{errores.aceptaTerminos}</p>}
+            <label className={`casilla-legal ${errores.aceptaPrivacidad ? 'casilla-error' : ''}`}>
+              <input type="checkbox" name="aceptaPrivacidad" checked={form.aceptaPrivacidad} onChange={cambiar} aria-invalid={Boolean(errores.aceptaPrivacidad)} />
+              <span>
+                Autorizo de forma previa, expresa e informada el tratamiento de mis datos personales para responder mi mensaje,
+                según la{' '}
+                <Link to="/privacidad" target="_blank" rel="noopener" className="underline hover:text-white">política de privacidad</Link>{' '}
+                (Ley 1581 de 2012).
+              </span>
+            </label>
+            {errores.aceptaPrivacidad && <p className="-mt-2 mb-3 text-xs text-rose-300">{errores.aceptaPrivacidad}</p>}
             <Turnstile onToken={setToken} reinicio={reinicio} />
             <Button type="submit" className="mt-2 w-full !py-4" disabled={estado === 'enviando'}>
               {estado === 'enviando' ? 'Enviando…' : 'Enviar mensaje →'}

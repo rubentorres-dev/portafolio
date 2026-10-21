@@ -13,3 +13,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 *.log
+
+# Exportaciones del registro de autorizaciones (contienen datos personales: nunca subirlas)
+consentimientos*.csv

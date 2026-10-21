@@ -24,6 +24,7 @@ export default function Footer() {
             <Link to="/terminos" className="hover:text-white">Términos</Link>
             <Link to="/privacidad" className="hover:text-white">Privacidad</Link>
             <Link to="/cookies" className="hover:text-white">Cookies</Link>
+            <Link to="/reembolsos" className="hover:text-white">Reembolsos</Link>
           </nav>
           <span className="font-mono text-xs">Hecho con React + Express</span>
         </div>

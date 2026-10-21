@@ -1,5 +1,17 @@
 # Historial de cambios
 
+## v33 · 21 de octubre de 2026
+- **Formulario con dos casillas separadas:** "acepto los términos y condiciones" y "autorizo el tratamiento de mis datos" (Ley 1581), cada una con su enlace (abren en otra pestaña para no perder lo escrito). El servidor rechaza el envío si falta cualquiera.
+- **Registro trazable de autorizaciones** (tabla `consentimientos`, script `database/05_consentimientos.sql`): fecha y hora del servidor, versión de los documentos, texto exacto aceptado, página, IP y navegador. Se guarda en la misma transacción que el mensaje. Exportable con `npm run consentimientos` o desde el SQL Editor de Neon (ver `docs/REGISTRO_CONSENTIMIENTOS.md`).
+- **Borrado automático:** mensajes a los 12 meses y registros de autorización 5 años después, como dice la política.
+- **Política de datos personales completa** (responsable, finalidades, derechos, plazos de 10 y 15 días hábiles, menores, transferencia internacional, conservación, vigencia).
+- **Nueva Política de reembolsos** (`/reembolsos`): retracto de 5 días hábiles (art. 47 Ley 1480), trabajo iniciado, garantía, reversión del pago (art. 51).
+- **Aviso legal con créditos y licencias** de logos, íconos, banderas, mapa y fuentes.
+- **Fuentes alojadas en el propio sitio** (@fontsource): el navegador ya no se conecta a Google Fonts, así la IP del visitante no se envía a terceros.
+- **Página de Gracias:** el mismo agujero negro del inicio (círculo completo con la luz infinita), más pequeño, con todo el contenido dentro; se adapta al tamaño del círculo en cualquier pantalla.
+- Revisión legal resumida en `docs/CUMPLIMIENTO_LEGAL.md`.
+- **Luz del agujero negro más fluida** (inicio y gracias): bordes difuminados sin cortes duros, la luz gira a velocidad constante (antes frenaba en cada vuelta), las capas suman luz como luz real y el brillo "respira" suave sin saltos. En el círculo pequeño los grosores se adaptan a su tamaño.
+
 ## v32 · 21 de octubre de 2026
 - **TikTok activo:** el ícono abre tiktok.com/@rubentorres.dev (Contacto y pie de página) y se agregó a los datos para Google.
 - Incluye todo lo de v30 y v31 (Instagram activo, correo rubentorres.devs@gmail.com, ícono de TikTok). **Facebook activo:** abre el perfil Ruben Torres Dev (facebook.com/profile.php?id=61595662231133). Los 8 íconos ya tienen enlace.

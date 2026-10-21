@@ -9,7 +9,8 @@
     "start": "node src/server.js",
     "test": "jest --runInBand",
     "telegram:id": "node scripts/telegram-chat-id.js",
-    "whatsapp:probar": "node scripts/whatsapp-probar.js"
+    "whatsapp:probar": "node scripts/whatsapp-probar.js",
+    "consentimientos": "node scripts/consentimientos.js"
   },
   "engines": {
     "node": ">=20"

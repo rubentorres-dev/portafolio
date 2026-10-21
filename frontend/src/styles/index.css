@@ -311,80 +311,73 @@
     radial-gradient(circle at 50% 50%, #04041a 0%, #04041a 80%, #0b0c45 93%, rgba(79,70,229,.55) 100%);
 }
 
-/* 4. Anillo con zonas brillantes que recorren la curva.
-   La capa se extiende 26px por fuera del borde: dos máscaras juntas dibujan
-   el filo nítido + su resplandor suave (lo que antes hacían 3 drop-shadow). */
+/* 4-6. LUZ DEL BORDE (v34): todo con bordes difuminados (sin cortes duros), giros a velocidad
+   constante (sin frenar en cada vuelta) y capas que SUMAN luz (plus-lighter) como luz real.
+   --e escala los grosores: 1 en el inicio, menos en círculos pequeños (página de gracias). */
+.eclipse-v3 { --e: 1; }
+.ev-borde, .ev-agua, .ev-cometa, .ev-borde-2 { mix-blend-mode: screen; mix-blend-mode: plus-lighter; }
+
+/* 4. Anillo con zonas brillantes que recorren la curva: filo fino + resplandor ancho y suave */
 .ev-borde {
-  inset: -26px;
+  inset: calc(-26px * var(--e));
   background: conic-gradient(from 0deg,
-    #6366f1 0deg, #ffffff 20deg, #c7d2fe 45deg, #4f46e5 80deg, #a5b4fc 120deg, #ffffff 150deg,
-    #818cf8 185deg, #4338ca 220deg, #e0e7ff 255deg, #ffffff 275deg, #6366f1 310deg, #c4b5fd 340deg, #6366f1 360deg);
+    #6366f1 0deg, #ffffff 22deg, #c7d2fe 48deg, #4f46e5 85deg, #a5b4fc 122deg, #ffffff 152deg,
+    #818cf8 188deg, #4338ca 222deg, #e0e7ff 254deg, #ffffff 276deg, #6366f1 312deg, #c4b5fd 340deg, #6366f1 360deg);
   -webkit-mask:
-    radial-gradient(farthest-side, transparent calc(100% - 34px), #000 calc(100% - 31px), #000 calc(100% - 26px), transparent calc(100% - 25px)),
-    radial-gradient(farthest-side, transparent calc(100% - 46px), rgba(0,0,0,.1) calc(100% - 38px), rgba(0,0,0,.5) calc(100% - 30px), rgba(0,0,0,.42) calc(100% - 22px), rgba(0,0,0,.12) calc(100% - 10px), transparent 100%);
+    radial-gradient(farthest-side, transparent calc(100% - 36px * var(--e)), #000 calc(100% - 30px * var(--e)), #000 calc(100% - 27px * var(--e)), transparent calc(100% - 22px * var(--e))),
+    radial-gradient(farthest-side, transparent calc(100% - 50px * var(--e)), rgba(0,0,0,.12) calc(100% - 40px * var(--e)), rgba(0,0,0,.45) calc(100% - 30px * var(--e)), rgba(0,0,0,.3) calc(100% - 18px * var(--e)), rgba(0,0,0,.08) calc(100% - 8px * var(--e)), transparent 100%);
   mask:
-    radial-gradient(farthest-side, transparent calc(100% - 34px), #000 calc(100% - 31px), #000 calc(100% - 26px), transparent calc(100% - 25px)),
-    radial-gradient(farthest-side, transparent calc(100% - 46px), rgba(0,0,0,.1) calc(100% - 38px), rgba(0,0,0,.5) calc(100% - 30px), rgba(0,0,0,.42) calc(100% - 22px), rgba(0,0,0,.12) calc(100% - 10px), transparent 100%);
+    radial-gradient(farthest-side, transparent calc(100% - 36px * var(--e)), #000 calc(100% - 30px * var(--e)), #000 calc(100% - 27px * var(--e)), transparent calc(100% - 22px * var(--e))),
+    radial-gradient(farthest-side, transparent calc(100% - 50px * var(--e)), rgba(0,0,0,.12) calc(100% - 40px * var(--e)), rgba(0,0,0,.45) calc(100% - 30px * var(--e)), rgba(0,0,0,.3) calc(100% - 18px * var(--e)), rgba(0,0,0,.08) calc(100% - 8px * var(--e)), transparent 100%);
 }
-/* 5. Segundo anillo al revés: destellos cuando se cruzan (solo en pantallas grandes) */
+/* 5. Segundo anillo al revés: destellos suaves cuando se cruzan (solo en pantallas grandes) */
 .ev-borde-2 {
-  inset: 0; opacity: .55;
-  background: conic-gradient(from 90deg, transparent 0deg, #ffffff 25deg, transparent 60deg, transparent 150deg, #c4b5fd 175deg, transparent 210deg, transparent 280deg, #ffffff 300deg, transparent 330deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 calc(100% - 5px), #000 100%);
+  inset: 0; opacity: .5;
+  background: conic-gradient(from 90deg, transparent 0deg, rgba(255,255,255,.9) 28deg, transparent 64deg, transparent 150deg,
+    rgba(196,181,253,.85) 178deg, transparent 214deg, transparent 280deg, rgba(255,255,255,.85) 302deg, transparent 336deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px * var(--e)), #000 calc(100% - 5px * var(--e)), rgba(0,0,0,.6) 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 10px * var(--e)), #000 calc(100% - 5px * var(--e)), rgba(0,0,0,.6) 100%);
 }
 
-/* Efecto AGUA: dos ondas de luz anchas y suaves que giran a distinto ritmo (una acelera y frena)
-   y se expanden un poco, como reflejos sobre agua. Solo usan transform → cero repintado. */
+/* Ondas de luz anchas y suaves que fluyen alrededor a distinto ritmo (efecto agua/luz). */
 .ev-agua {
-  inset: -30px; opacity: .55;
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 64px), rgba(0,0,0,.35) calc(100% - 44px), #000 calc(100% - 32px), rgba(0,0,0,.4) calc(100% - 20px), transparent 100%);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 64px), rgba(0,0,0,.35) calc(100% - 44px), #000 calc(100% - 32px), rgba(0,0,0,.4) calc(100% - 20px), transparent 100%);
+  inset: calc(-30px * var(--e)); opacity: .5;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 66px * var(--e)), rgba(0,0,0,.3) calc(100% - 46px * var(--e)), #000 calc(100% - 32px * var(--e)), rgba(0,0,0,.35) calc(100% - 18px * var(--e)), transparent 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 66px * var(--e)), rgba(0,0,0,.3) calc(100% - 46px * var(--e)), #000 calc(100% - 32px * var(--e)), rgba(0,0,0,.35) calc(100% - 18px * var(--e)), transparent 100%);
   will-change: transform; backface-visibility: hidden;
 }
 .ev-agua-1 {
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(224,231,255,.9) 30deg, rgba(129,140,248,.5) 60deg, transparent 95deg,
-    transparent 160deg, rgba(196,181,253,.75) 200deg, transparent 240deg, transparent 290deg, rgba(165,243,252,.55) 320deg, transparent 350deg);
-  animation: aguaOla 9s cubic-bezier(.45,.05,.55,.95) infinite;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(224,231,255,.85) 36deg, rgba(129,140,248,.45) 70deg, transparent 110deg,
+    transparent 160deg, rgba(196,181,253,.7) 205deg, transparent 250deg, transparent 290deg, rgba(165,243,252,.5) 322deg, transparent 356deg);
+  animation: girar 10s linear infinite;
 }
 .ev-agua-2 {
-  opacity: .4;
-  background: conic-gradient(from 120deg, transparent 0deg, rgba(255,255,255,.8) 22deg, transparent 55deg, transparent 140deg,
-    rgba(167,139,250,.7) 175deg, transparent 215deg, transparent 260deg, rgba(199,210,254,.7) 300deg, transparent 335deg);
-  animation: aguaOla2 13s cubic-bezier(.45,.05,.55,.95) infinite;
-}
-@keyframes aguaOla {
-  0%   { transform: rotate(0deg) scale(1); }
-  50%  { transform: rotate(200deg) scale(1.012); }
-  100% { transform: rotate(360deg) scale(1); }
-}
-@keyframes aguaOla2 {
-  0%   { transform: rotate(0deg) scale(1.01); }
-  50%  { transform: rotate(-170deg) scale(1); }
-  100% { transform: rotate(-360deg) scale(1.01); }
+  opacity: .38;
+  background: conic-gradient(from 120deg, transparent 0deg, rgba(255,255,255,.75) 26deg, transparent 62deg, transparent 140deg,
+    rgba(167,139,250,.65) 178deg, transparent 220deg, transparent 260deg, rgba(199,210,254,.65) 302deg, transparent 340deg);
+  animation: girar 15s linear infinite reverse;
 }
 
-/* 6. Cometas: arco corto con estela y punta blanca, con su propio resplandor en la máscara */
+/* 6. Cometas: estela larga que se desvanece y punta blanca suave (sin corte duro al final) */
 .ev-cometa {
-  inset: -20px;
-  background: conic-gradient(from 0deg, transparent 0deg, transparent 285deg, rgba(124,58,237,.35) 320deg, rgba(196,181,253,.9) 350deg, #ffffff 358deg, transparent 360deg);
+  inset: calc(-20px * var(--e));
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 240deg, rgba(124,58,237,.18) 290deg,
+    rgba(167,139,250,.5) 325deg, rgba(221,214,254,.85) 345deg, #ffffff 354deg, rgba(255,255,255,.35) 358deg, transparent 360deg);
   -webkit-mask:
-    radial-gradient(farthest-side, transparent calc(100% - 29px), #000 calc(100% - 27px), #000 calc(100% - 21px), transparent calc(100% - 20px)),
-    radial-gradient(farthest-side, transparent calc(100% - 52px), rgba(0,0,0,.45) calc(100% - 25px), transparent 100%);
+    radial-gradient(farthest-side, transparent calc(100% - 31px * var(--e)), #000 calc(100% - 27px * var(--e)), #000 calc(100% - 23px * var(--e)), transparent calc(100% - 18px * var(--e))),
+    radial-gradient(farthest-side, transparent calc(100% - 56px * var(--e)), rgba(0,0,0,.4) calc(100% - 25px * var(--e)), transparent 100%);
   mask:
-    radial-gradient(farthest-side, transparent calc(100% - 29px), #000 calc(100% - 27px), #000 calc(100% - 21px), transparent calc(100% - 20px)),
-    radial-gradient(farthest-side, transparent calc(100% - 52px), rgba(0,0,0,.45) calc(100% - 25px), transparent 100%);
+    radial-gradient(farthest-side, transparent calc(100% - 31px * var(--e)), #000 calc(100% - 27px * var(--e)), #000 calc(100% - 23px * var(--e)), transparent calc(100% - 18px * var(--e))),
+    radial-gradient(farthest-side, transparent calc(100% - 56px * var(--e)), rgba(0,0,0,.4) calc(100% - 25px * var(--e)), transparent 100%);
 }
 
 /* Velocidades distintas para que nunca se vea repetitivo */
 .ev-gira { animation: girar 7s linear infinite; }
 .ev-gira-inverso { animation: girar 11s linear infinite reverse; }
 .ev-gira-lento { animation: girar 18s linear infinite; }
-.ev-gira-cometa { animation: girar 6.9s cubic-bezier(.45,.05,.55,.95) infinite; }
-.ev-parpadeo { animation: parpadeoLuz 4.5s ease-in-out infinite; }
-@keyframes parpadeoLuz {
-  0%, 100% { opacity: 1; } 18% { opacity: .82; } 32% { opacity: .97; } 47% { opacity: .78; } 63% { opacity: 1; } 80% { opacity: .88; }
-}
+.ev-gira-cometa { animation: girar 6.9s linear infinite; } /* velocidad constante: la luz nunca se frena */
+.ev-parpadeo { animation: parpadeoLuz 5s ease-in-out infinite; }
+@keyframes parpadeoLuz { 0%, 100% { opacity: 1; } 50% { opacity: .84; } } /* respira suave, sin saltos */
 /* Fuera de pantalla las animaciones se pausan (ahorra batería y CPU) */
 .eclipse-pausado * { animation-play-state: paused !important; }
 /* Celulares y tablets: menos capas girando */
@@ -629,3 +622,27 @@ img, video, svg, canvas { max-width: 100%; }
 /* Menú del celular: la pastilla de vidrio se puede arrastrar con el dedo entre secciones */
 .menu-arrastre { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .menu-arrastre a { position: relative; z-index: 1; }
+
+/* =====================  PÁGINA DE GRACIAS (v33)  =====================
+   Agujero negro del inicio, más pequeño y completo; el contenido va dentro del disco. */
+.gracias-agujero {
+  width: min(90vw, 74svh, 540px); aspect-ratio: 1;
+  display: grid; place-items: center;
+}
+.gracias-agujero { container-type: inline-size; }
+.gracias-agujero .eclipse-v3 { --e: .62; }
+/* En el círculo pequeño la luz se suma menos para que no se vea "quemada" (todo blanco) */
+.gracias-agujero .ev-borde, .gracias-agujero .ev-agua, .gracias-agujero .ev-cometa { mix-blend-mode: screen; }
+.gracias-agujero .ev-borde { opacity: .85; }
+.gracias-agujero .ev-agua-1 { opacity: .32; }
+.gracias-agujero .ev-agua-2 { opacity: .24; }
+.gracias-agujero .ev-glow-fijo { box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 0 5px 1px #fff, 0 0 16px 3px rgba(199,210,254,.8),
+  0 0 40px 10px rgba(129,140,248,.6), 0 0 80px 22px rgba(79,70,229,.4); }
+.gracias-contenido { position: relative; z-index: 5; width: 70%; }
+/* Todo se mide respecto al tamaño del círculo (cqw), así cabe dentro en cualquier pantalla. */
+.gr-check  { width: 11cqw; height: 11cqw; font-size: 5.5cqw; }
+.gr-titulo { margin-top: 3cqw; font-size: 7.6cqw; }
+.gr-texto  { margin-top: 3cqw; max-width: 60cqw; font-size: 3.4cqw; }
+.gr-botones { margin-top: 4.5cqw; gap: 2cqw; }
+.gr-volver { padding: 2.4cqw 4.4cqw !important; font-size: 3.3cqw !important; }
+.gr-icono  { width: 9.5cqw; height: 9.5cqw; padding: 0 !important; }
