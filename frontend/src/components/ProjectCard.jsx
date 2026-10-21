@@ -9,7 +9,7 @@ export default function ProjectCard({ p, destacada = false }) {
   const est = estados[p.estado] || estados.en_progreso;
   const [imgRota, setImgRota] = useState(false); // si la imagen no carga, se muestra el ícono </>
   return (
-    <TiltCard className={`tarjeta-proyecto h-full min-w-0 overflow-hidden rounded-tarjeta ${destacada ? 'borde-animado shadow-[0_30px_80px_rgba(79,70,229,.35)]' : 'tarjeta'}`}>
+    <TiltCard className={`tarjeta-proyecto h-full min-w-0 overflow-hidden rounded-tarjeta borde-animado ${destacada ? 'shadow-[0_30px_80px_rgba(79,70,229,.35)]' : 'shadow-[0_18px_50px_rgba(79,70,229,.18)]'}`}>
       <Link to={`/proyectos/${p.slug}`} className="flex h-full flex-col">
         <div className="relative m-3 aspect-[16/9] overflow-hidden rounded-[18px] bg-gradient-to-br from-[#1e1b4b] to-[#312e81]">
           {p.imagen && !imgRota

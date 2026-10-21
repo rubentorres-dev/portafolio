@@ -82,10 +82,16 @@ export default function Globe({ tamano = 560 }) {
       ctx.globalAlpha = 1;
     };
 
+    // El globo se dibuja con el tamaño REAL que tiene en pantalla (en celular es más pequeño que "tamano").
+    // Antes se dibujaba siempre a 520 px y en celulares quedaba corrido a la derecha y cortado.
+    const ladoReal = () => Math.max(1, Math.round((caja.current?.clientWidth || tamano) * dpr));
+    let lado = ladoReal();
+    const alCambiar = () => { lado = ladoReal(); };
+    window.addEventListener('resize', alCambiar);
     const globe = createGlobe(ref.current, {
       devicePixelRatio: dpr,
-      width: tamano * dpr,
-      height: tamano * dpr,
+      width: lado,
+      height: lado,
       phi,
       theta: THETA,
       dark: 1,
@@ -112,6 +118,8 @@ export default function Globe({ tamano = 560 }) {
         const enfocado = hover.current >= 0;
         foco += ((enfocado ? 1 : 0) - foco) * 0.15;
         brillo += ((enfocado ? 1.6 : 5) - brillo) * 0.15;
+        state.width = lado;
+        state.height = lado;
         state.phi = phi;
         state.mapBrightness = brillo;
         dibujar();
@@ -181,6 +189,7 @@ export default function Globe({ tamano = 560 }) {
 
     return () => {
       io?.disconnect();
+      window.removeEventListener('resize', alCambiar);
       globe.destroy();
       el.removeEventListener('pointerdown', bajar);
       el.removeEventListener('pointermove', mover);
@@ -193,7 +202,7 @@ export default function Globe({ tamano = 560 }) {
   const pais = info ? datos.paises[info.p] : null;
 
   return (
-    <div ref={caja} className="relative" style={{ width: tamano, maxWidth: '100%', aspectRatio: '1' }}>
+    <div ref={caja} className="relative mx-auto" style={{ width: tamano, maxWidth: '100%', aspectRatio: '1' }}>
       <canvas ref={ref} aria-hidden="true" style={{ width: '100%', height: '100%' }} />
       <canvas
         ref={capa}

@@ -63,7 +63,7 @@ export default function Contact({ asuntoInicial = '' }) {
           <Reveal delay={0.1}><h2 className="titulo mt-4">Hablemos de tu <span className="degradado">próximo proyecto</span></h2></Reveal>
           <Reveal delay={0.2}><p className="subtexto mt-6">Disponible para trabajo remoto, prácticas y proyectos freelance. Respondo en menos de 24 horas.</p></Reveal>
           <Reveal delay={0.3}>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 grid w-fit max-w-full gap-3 sm:grid-cols-2">
               <a href={enlaceWhatsApp} target="_blank" rel="noreferrer" className="btn btn-whatsapp">
                 <Icono nombre="whatsapp" className="h-5 w-5" /> Escríbeme por WhatsApp
               </a>

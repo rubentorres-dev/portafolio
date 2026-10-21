@@ -7,14 +7,14 @@ import Reveal from '../components/ui/Reveal';
 
 export default function Reach() {
   return (
-    <section id="alcance" className="seccion overflow-hidden" style={{ background: 'radial-gradient(800px 500px at 50% 60%, #16136b 0%, transparent 70%)' }}>
+    <section id="alcance" className="seccion sin-seleccion overflow-hidden" style={{ background: 'radial-gradient(800px 500px at 50% 60%, #16136b 0%, transparent 70%)' }}>
       <div className="contenedor">
         <SectionTitle etiqueta="Alcance" titulo="Desde Barranquilla," resaltado="para todo el mundo hispano" centrado />
-        <div className="relative mt-10 grid items-center gap-10 lg:grid-cols-[1fr_auto_1fr]">
+        <div className="relative mt-10 grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto_1fr]">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-1 lg:gap-24">
             {alcance.slice(0, 2).map((a, i) => <Dato key={a.texto} a={a} delay={i * 0.15} />)}
           </div>
-          <Reveal className="mx-auto"><Globe tamano={520} /></Reveal>
+          <div data-centrar className="mx-auto flex w-full max-w-[520px] justify-center"><Reveal className="w-full"><Globe tamano={520} /></Reveal></div>
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-1 lg:gap-24 lg:text-right">
             {alcance.slice(2).map((a, i) => <Dato key={a.texto} a={a} delay={0.3 + i * 0.15} />)}
           </div>

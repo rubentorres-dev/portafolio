@@ -14,10 +14,14 @@ let instancia = null;
 // Desplaza a un elemento (#id) con scroll suave si está activo.
 // Si la sección cabe en la pantalla, queda CENTRADA; si es más alta, se muestra desde su inicio.
 export function scrollA(destino) {
-  const el = typeof destino === 'string' ? document.querySelector(destino) : destino;
-  if (!el) return;
+  const seccion = typeof destino === 'string' ? document.querySelector(destino) : destino;
+  if (!seccion) return;
+  // Si la sección marca un elemento con data-centrar (ej. el globo), se centra ese elemento.
+  const el = seccion.querySelector('[data-centrar]') || seccion;
+  const barra = 80; // alto de la barra de navegación flotante
   const alto = el.offsetHeight;
-  const offset = alto < window.innerHeight ? -(window.innerHeight - alto) / 2 : 0;
+  const libre = window.innerHeight - barra;
+  const offset = alto < libre ? -(barra + (libre - alto) / 2) : (el === seccion ? 0 : -barra);
   if (instancia) instancia.scrollTo(el, { offset, duration: 1.4 });
   else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + offset, behavior: 'smooth' });
 }

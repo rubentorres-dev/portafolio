@@ -10,6 +10,9 @@
 }
 
 @layer base {
+  /* Toda rejilla sin columnas definidas usa UNA columna que nunca supera la pantalla
+     (antes el globo de 520 px ensanchaba la columna y quedaba corrido a la derecha). */
+  .grid { grid-template-columns: minmax(0, 1fr); }
   /* La página no se puede ampliar, alejar ni arrastrar hacia los lados (celulares y tablets).
      pan-x pan-y = se permite desplazar, pero no pellizcar para hacer zoom. */
   html {
@@ -616,3 +619,13 @@ img, video, svg, canvas { max-width: 100%; }
   .total { animation: none; --p: 1; }
   .total > .total-rayos { animation: none; }
 }
+
+/* Zona del globo: tocar o mantener presionado no selecciona texto ni abre "Copiar / Traducir" */
+.sin-seleccion, .sin-seleccion * {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Menú del celular: la pastilla de vidrio se puede arrastrar con el dedo entre secciones */
+.menu-arrastre { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.menu-arrastre a { position: relative; z-index: 1; }

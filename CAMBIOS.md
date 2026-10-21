@@ -1,5 +1,14 @@
 # Historial de cambios
 
+## v28 · 20 de octubre de 2026
+- Botones de WhatsApp y Telegram con el mismo largo.
+- Zona del globo: tocar o mantener presionado ya no selecciona texto ni abre "Copiar / Traducir".
+- **Globo centrado en celular:** se dibujaba siempre a 520 px aunque en el celular mide menos, por eso salía corrido a la derecha y cortado. Ahora se dibuja con su tamaño real y se recalcula al girar la pantalla.
+- Todas las tarjetas de proyectos tienen el borde de luz infinito (antes solo SGIS).
+- Nuevo enlace **Alcance** en la barra (PC y celular). Al tocarlo, el globo queda centrado en la pantalla, debajo de la barra.
+- Menú del celular: la pastilla de vidrio sigue la sección actual y se puede **arrastrar con el dedo** entre secciones; al soltar te lleva a esa sección (como en el computador).
+- Toda rejilla sin columnas definidas usa una columna que nunca supera la pantalla.
+
 ## v27 · 20 de octubre de 2026
 - Se quitaron los botones grandes de Instagram, Facebook y Gmail (repetían los íconos de abajo). Quedan WhatsApp y Telegram.
 - Los 7 íconos de redes (Contacto y pie de página) van **siempre en una sola fila**, uno al lado del otro, y se achican solos en pantallas pequeñas. Instagram y Facebook quedan "próximamente" hasta poner el usuario en `perfil.instagram` / `perfil.facebook`.
