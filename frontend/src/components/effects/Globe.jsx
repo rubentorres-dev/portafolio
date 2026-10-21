@@ -130,7 +130,9 @@ export default function Globe({ tamano = 560 }) {
     const buscar = (e) => {
       const rect = capa.current.getBoundingClientRect();
       const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-      const umbral = Math.max(9, rect.width / 40);
+      // Con el dedo el área de toque es mucho más grande que con el mouse.
+      const tactil = e.pointerType === 'touch' || e.pointerType === 'pen';
+      const umbral = tactil ? Math.max(24, rect.width / 13) : Math.max(9, rect.width / 40);
       let mejor = -1, dist = umbral * umbral;
       for (let i = 0; i < PUNTOS.length; i++) {
         if (proyectados[i * 3 + 2] <= 0.05) continue;
@@ -140,9 +142,22 @@ export default function Globe({ tamano = 560 }) {
       }
       hover.current = mejor;
       const cajaRect = caja.current.getBoundingClientRect();
-      setInfo(mejor >= 0 ? { p: mejor, x: e.clientX - cajaRect.left, y: e.clientY - cajaRect.top } : null);
+      // La etiqueta nunca se sale del globo por los lados ni por arriba (en celular quedaba cortada).
+      const x = Math.min(Math.max(e.clientX - cajaRect.left, 95), cajaRect.width - 95);
+      const y = Math.max(e.clientY - cajaRect.top, 60);
+      setInfo(mejor >= 0 ? { p: mejor, x, y } : null);
     };
-    const salir = () => { if (!arrastre.activo) { hover.current = -1; setInfo(null); } };
+    // En celular no existe "pasar el cursor": el país queda mostrado hasta tocar otro sitio.
+    // (Antes el navegador disparaba "pointerleave" justo al levantar el dedo y lo borraba al instante.)
+    const salir = (e) => {
+      if (e.pointerType === 'touch' || e.pointerType === 'pen' || arrastre.activo) return;
+      hover.current = -1; setInfo(null);
+    };
+    const tocarFuera = (e) => {
+      if (hover.current < 0 || caja.current?.contains(e.target)) return;
+      hover.current = -1; setInfo(null);
+    };
+    document.addEventListener('pointerdown', tocarFuera);
     const el = capa.current;
 
     const bajar = (e) => {
@@ -154,7 +169,7 @@ export default function Globe({ tamano = 560 }) {
       el.style.cursor = 'grabbing';
     };
     const mover = (e) => {
-      if (!arrastre.activo) return buscar(e);
+      if (!arrastre.activo) return e.pointerType === 'mouse' ? buscar(e) : undefined;
       const dx = e.clientX - arrastre.x;
       arrastre.x = e.clientX;
       if (Math.abs(e.clientX - arrastre.inicioX) > 4 && !arrastre.movido) {
@@ -173,7 +188,7 @@ export default function Globe({ tamano = 560 }) {
       arrastre.activo = false;
       el.releasePointerCapture?.(e.pointerId);
       el.style.cursor = '';
-      if (!arrastre.movido) buscar(e); // un toque sin arrastrar muestra el país
+      if (!arrastre.movido && e.type === 'pointerup') buscar(e); // un toque sin arrastrar muestra el país
     };
 
     el.addEventListener('pointerdown', bajar);
@@ -196,6 +211,7 @@ export default function Globe({ tamano = 560 }) {
       el.removeEventListener('pointerup', soltar);
       el.removeEventListener('pointercancel', soltar);
       el.removeEventListener('pointerleave', salir);
+      document.removeEventListener('pointerdown', tocarFuera);
     };
   }, [tamano, reducir]);
 

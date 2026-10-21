@@ -1,5 +1,9 @@
 # Historial de cambios
 
+## v29 · 21 de octubre de 2026
+- **Globo en celular:** al tocar un país se muestra su nombre y bandera, igual que en el computador (los demás países se ocultan y el globo se detiene). Antes el navegador borraba la etiqueta en el mismo instante en que se levantaba el dedo.
+- Área de toque más grande para el dedo; la etiqueta queda visible hasta tocar otro país o fuera del globo, y nunca se sale de la pantalla.
+
 ## v28 · 20 de octubre de 2026
 - Botones de WhatsApp y Telegram con el mismo largo.
 - Zona del globo: tocar o mantener presionado ya no selecciona texto ni abre "Copiar / Traducir".
