@@ -1,5 +1,10 @@
 # Historial de cambios
 
+## v34 · 21 de octubre de 2026
+- **Rutas internas sin 404:** al abrir directo o recargar `/blog`, `/proyectos`, `/proyectos/...`, `/terminos`, `/privacidad`, `/reembolsos`, etc. Vercel mostraba "404: NOT_FOUND". Se cambió la regla de `frontend/vercel.json` por la estándar de SPA (`/(.*)` → `/index.html`); los archivos reales (imágenes, assets, robots, sitemap) se siguen sirviendo primero.
+- **Estadísticas de GitHub más robustas:** Render usa IPs compartidas y sin token GitHub limita a 60 consultas/hora, por eso la sección mostraba "No pude conectar". Ahora el servicio reintenta sin token si el token está vencido (401), devuelve los últimos datos buenos cuando GitHub falla, tiene tiempo máximo de 10 s y deja en el log de Render el motivo exacto (usuario inexistente, límite alcanzado, etc.). **Requiere `GITHUB_TOKEN` en las variables de entorno de Render.**
+- **Íconos de Flet y Pagos Wompi:** antes se veían las letras "Fl" y "Pa"; ahora tienen ícono propio (`/tech/flet.svg` y `/tech/wompi.svg`, íconos genéricos en su color).
+
 ## v33 · 21 de octubre de 2026
 - **Formulario con dos casillas separadas:** "acepto los términos y condiciones" y "autorizo el tratamiento de mis datos" (Ley 1581), cada una con su enlace (abren en otra pestaña para no perder lo escrito). El servidor rechaza el envío si falta cualquiera.
 - **Registro trazable de autorizaciones** (tabla `consentimientos`, script `database/05_consentimientos.sql`): fecha y hora del servidor, versión de los documentos, texto exacto aceptado, página, IP y navegador. Se guarda en la misma transacción que el mensaje. Exportable con `npm run consentimientos` o desde el SQL Editor de Neon (ver `docs/REGISTRO_CONSENTIMIENTOS.md`).
