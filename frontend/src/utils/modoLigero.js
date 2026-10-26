@@ -6,8 +6,8 @@
 //  - Android y otros táctiles: solo si el equipo es de gama media/baja (menos de 8 GB de RAM,
 //    ej. Xiaomi Note 11S) o si el navegador no informa la memoria.
 //  - Computadores: solo si tienen 4 núcleos o menos, o poca memoria.
-//  - Además, si un equipo con efectos completos va lento (menos de 40 cuadros por segundo al cargar),
-//    cambia solo a modo ligero. Nunca pasa en iPhone.
+//  - Además, si un equipo con efectos completos va lento o con tirones durante los primeros 20 s
+//    (al cargar o haciendo scroll), cambia solo a modo ligero. Nunca pasa en iPhone.
 // Para probar a mano: añade ?efectos=ligero o ?efectos=completos a la dirección (se recuerda en ese navegador).
 
 const CLAVE = 'modo-efectos';
@@ -50,20 +50,32 @@ function pasarALigero() {
   window.dispatchEvent(new Event('modo-ligero'));
 }
 
-// Mide la fluidez real unos segundos después de cargar; si va lento, baja los efectos.
+// Mide la fluidez real durante los primeros 20 s (al cargar y mientras la persona hace scroll).
+// Si en algún tramo de 3 s va a menos de 48 cuadros por segundo, o más del 20 % de los cuadros
+// tardan demasiado (tirones), baja los efectos. Nunca en iPhone ni si se eligió ?efectos=completos.
 function vigilarFluidez() {
   if (esIOS() || eleccionManual() === 'completos') return;
-  const medir = () => {
-    let cuadros = 0;
-    const inicio = performance.now();
-    const paso = (t) => {
-      cuadros += 1;
-      if (t - inicio < 2500) requestAnimationFrame(paso);
-      else if ((cuadros * 1000) / (t - inicio) < 40 && !document.hidden) pasarALigero();
-    };
-    requestAnimationFrame(paso);
+  const DURACION = 20000;
+  const TRAMO = 3000;
+  let inicio = 0;
+  let tramo = 0;
+  let cuadros = 0;
+  let lentos = 0;
+  let anterior = 0;
+  const paso = (t) => {
+    if (esLigero()) return;
+    if (document.hidden) { anterior = 0; requestAnimationFrame(paso); return; }
+    if (!inicio) { inicio = t; tramo = t; anterior = t; requestAnimationFrame(paso); return; }
+    if (anterior) { cuadros += 1; if (t - anterior > 34) lentos += 1; }
+    anterior = t;
+    if (t - tramo >= TRAMO) {
+      const fps = (cuadros * 1000) / (t - tramo);
+      if (fps < 48 || lentos / Math.max(cuadros, 1) > 0.2) { pasarALigero(); return; }
+      tramo = t; cuadros = 0; lentos = 0;
+    }
+    if (t - inicio < DURACION) requestAnimationFrame(paso);
   };
-  const empezar = () => setTimeout(() => { if (!document.hidden) medir(); }, 2000);
+  const empezar = () => setTimeout(() => requestAnimationFrame(paso), 1500);
   if (document.readyState === 'complete') empezar();
   else window.addEventListener('load', empezar, { once: true });
 }

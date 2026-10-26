@@ -1,5 +1,12 @@
 # Historial de cambios
 
+## v36 · 26 de octubre de 2026
+- **Agujero negro más fluido en computador** (en algunos PC se trababa un poco):
+  - El halo exterior y el brillo de fondo quedan quietos en todos los equipos (girar y hacer parpadear dos capas tan grandes costaba mucho y casi no se notaba).
+  - El agujero del inicio se prepara como capa propia (`will-change`), así al agrandarse con el scroll la tarjeta gráfica solo lo escala en vez de redibujarlo.
+  - **Detector de fluidez más estricto:** durante los primeros 20 s (cargando y haciendo scroll) mide los cuadros por segundo en tramos de 3 s; si baja de 48 o hay muchos tirones, pasa solo a modo ligero. Nunca en iPhone ni con `?efectos=completos`.
+- El aspecto no cambia.
+
 ## v35 · 25 de octubre de 2026
 - **Agujero negro optimizado para Android** (se trababa en un Xiaomi Note 11S) con un **"modo ligero" automático** (`frontend/src/utils/modoLigero.js`). Mismo diseño y colores:
   - **iPhone / iPad: efectos completos siempre** (allí ya iba fluido).

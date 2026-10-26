@@ -27,8 +27,9 @@ export default function Eclipse({ className = '', style }) {
 
   return (
     <div ref={ref} className={`eclipse-v3 ${visible ? '' : 'eclipse-pausado'} ${className}`} style={style} aria-hidden>
-      <div className="ev-halo ev-gira-lento" />
-      <div className="ev-glow-fijo ev-parpadeo" />
+      {/* Halo y brillo quietos (v36): girar/parpadear dos capas tan grandes costaba mucho y casi no se notaba */}
+      <div className="ev-halo" />
+      <div className="ev-glow-fijo" />
       <div className="ev-disco" />
       <div className="ev-borde ev-gira" />
       <div className="ev-agua ev-agua-1" />

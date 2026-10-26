@@ -300,7 +300,7 @@
 .ev-glow-fijo {
   box-shadow: 0 0 0 1px rgba(255,255,255,.6), 0 0 6px 1px #fff, 0 0 22px 4px rgba(199,210,254,.85),
     0 0 60px 14px rgba(129,140,248,.7), 0 0 130px 36px rgba(79,70,229,.55), 0 0 260px 90px rgba(67,56,202,.3);
-  will-change: opacity;
+  
 }
 
 /* 3. Disco negro con neblina azul abajo */
@@ -665,3 +665,8 @@ img, video, svg, canvas { max-width: 100%; }
 .ligero .hero-anillo { will-change: transform, opacity; }
 /* Letras del nombre: el brillo que recorre cada letra va más lento (menos redibujos por segundo) */
 .ligero .letra-luna { animation-duration: 6s; }
+
+/* =====================  v36: más fluido en computadores  =====================
+   El agujero del inicio es enorme; al agrandarse con el scroll el navegador lo redibujaba en cada cuadro.
+   Con will-change se dibuja una vez y la tarjeta gráfica solo lo escala (como en celular). */
+.hero-anillo { will-change: transform, opacity; }
