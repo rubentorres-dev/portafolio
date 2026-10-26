@@ -3,6 +3,7 @@ import { VISTA } from '../data/animacion';
 import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MODO_LIGERO, esLigero } from '../utils/modoLigero';
 import { motion } from 'framer-motion';
 import { perfil } from '../data/content';
 import Button from '../components/ui/Button';
@@ -21,17 +22,23 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       // Entrada: el agujero negro baja un poco y se enciende (como en el video).
       gsap.set('.h-eclipse', { xPercent: -50, x: 0, y: 0 });
-      gsap.fromTo('.h-eclipse', { yPercent: -6, scale: 0.92, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: 2.2, ease: 'expo.out' });
+      // En modo ligero (celulares) solo se mueve y aparece: escalar el círculo gigante lo redibuja en cada cuadro.
+      if (MODO_LIGERO) gsap.fromTo('.h-eclipse', { yPercent: -6, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 2.2, ease: 'expo.out' });
+      else gsap.fromTo('.h-eclipse', { yPercent: -6, scale: 0.92, opacity: 0 }, { yPercent: 0, scale: 1, opacity: 1, duration: 2.2, ease: 'expo.out' });
 
       // Scroll: valores de inicio y fin EXPLÍCITOS (fromTo) para que al volver arriba
       // todo regrese exactamente a como estaba. scrub suave = sensación tipo Apple.
       const tl = gsap.timeline({ scrollTrigger: { trigger: raiz.current, start: 'top top', end: 'bottom top', scrub: 0.8, invalidateOnRefresh: true } });
-      tl.fromTo('.h-eclipse', { scale: 1 }, { scale: 1.35, ease: 'none', immediateRender: false }, 0)
+      // El acercamiento del agujero al bajar solo con efectos completos (en celulares de baja potencia trababa el scroll).
+      // Si el equipo pasa a modo ligero después de cargar, el valor se recalcula (refresh) y deja de escalar.
+      tl.fromTo('.h-eclipse', { scale: 1 }, { scale: () => (esLigero() ? 1 : 1.35), ease: 'none', immediateRender: false }, 0)
         .fromTo('.h-letra-scroll', { y: 0, opacity: 1 }, { y: (i) => (i % 2 ? -40 : 40), opacity: 0, stagger: 0.04, ease: 'none', immediateRender: false }, 0)
         .fromTo('.h-contenido-scroll', { y: 0, opacity: 1 }, { y: -60, opacity: 0, ease: 'none', immediateRender: false }, 0)
         .fromTo('.h-desliza', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3, immediateRender: false }, 0);
     }, raiz);
-    return () => ctx.revert();
+    const alPasarALigero = () => ScrollTrigger.refresh();
+    window.addEventListener('modo-ligero', alPasarALigero);
+    return () => { window.removeEventListener('modo-ligero', alPasarALigero); ctx.revert(); };
   }, []);
 
   // RUBEN - DEV → cada letra se anima por separado; '-' es la línea de luz del medio
@@ -53,8 +60,8 @@ export default function Hero() {
           style={{ fontSize: 'clamp(1.6rem, 4.6vw, 4.5rem)', letterSpacing: '0.3em', paddingLeft: '0.3em' }}>
           {caracteres.map((l, i) => (
             <motion.span key={i} className="inline-block"
-              initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
-              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }} viewport={VISTA}
+              initial={MODO_LIGERO ? { opacity: 0, y: 40 } : { opacity: 0, y: 40, filter: 'blur(12px)' }}
+              whileInView={MODO_LIGERO ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, filter: 'blur(0px)', transitionEnd: { filter: 'none' } }} viewport={VISTA}
               transition={{ duration: 1.1, delay: 0.5 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>
               <span className="h-letra-scroll inline-block will-change-transform">
                 {l === '-'

@@ -646,3 +646,22 @@ img, video, svg, canvas { max-width: 100%; }
 .gr-botones { margin-top: 4.5cqw; gap: 2cqw; }
 .gr-volver { padding: 2.4cqw 4.4cqw !important; font-size: 3.3cqw !important; }
 .gr-icono  { width: 9.5cqw; height: 9.5cqw; padding: 0 !important; }
+
+/* =====================  MODO LIGERO (v35): Android de gama media/baja y equipos lentos (nunca iPhone)  =====================
+   Mismo diseño y colores, pero mucho menos trabajo para la tarjeta gráfica:
+   - Sin mezcla "plus-lighter" (obligaba a fusionar capas enormes en cada cuadro).
+   - Solo 3 capas giran (anillo de luz, una onda de agua y un cometa) en vez de 6.
+   - El halo y el brillo de fondo quedan quietos (se pintan una sola vez).
+   - Las animaciones van a velocidad constante y se pausan fuera de pantalla (ya existía). */
+.ligero .ev-borde, .ligero .ev-agua, .ligero .ev-cometa, .ligero .ev-borde-2 { mix-blend-mode: normal; }
+.ligero .ev-halo, .ligero .ev-glow-fijo { animation: none; will-change: auto; }
+.ligero .ev-agua-2, .ligero .ev-borde-2, .ligero .ev-cometa + .ev-cometa { display: none; }
+.ligero .ev-borde { opacity: 1; }
+/* Sin la mezcla de luz, el filo blanco se refuerza en el brillo fijo (que no cuesta nada porque no se mueve) */
+.ligero .ev-glow-fijo { box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 0 10px 2px #fff, 0 0 26px 6px rgba(221,214,254,.9),
+  0 0 56px 14px rgba(129,140,248,.7), 0 0 110px 28px rgba(79,70,229,.5); }
+.ligero .ev-agua-1 { opacity: .7; animation-duration: 12s; }
+/* El agujero del inicio se dibuja una vez y la tarjeta gráfica solo lo mueve */
+.ligero .hero-anillo { will-change: transform, opacity; }
+/* Letras del nombre: el brillo que recorre cada letra va más lento (menos redibujos por segundo) */
+.ligero .letra-luna { animation-duration: 6s; }

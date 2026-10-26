@@ -1,5 +1,15 @@
 # Historial de cambios
 
+## v35 · 25 de octubre de 2026
+- **Agujero negro optimizado para Android** (se trababa en un Xiaomi Note 11S) con un **"modo ligero" automático** (`frontend/src/utils/modoLigero.js`). Mismo diseño y colores:
+  - **iPhone / iPad: efectos completos siempre** (allí ya iba fluido).
+  - **Android de gama media/baja** (menos de 8 GB de RAM o navegador que no lo informa) y computadores lentos (4 núcleos o menos): modo ligero.
+  - **Respaldo automático:** si un equipo con efectos completos va a menos de 40 cuadros por segundo al cargar, pasa solo a modo ligero (nunca en iPhone).
+  - Para probar a mano: `?efectos=ligero` o `?efectos=completos` al final de la dirección (se recuerda en ese navegador).
+- Qué cambia en modo ligero: sin la mezcla de luz `plus-lighter`; giran 3 capas (anillo, una onda de agua y un cometa) en vez de 6; el halo y el brillo de fondo quedan quietos (el filo blanco se refuerza en el brillo fijo); el agujero no se agranda al hacer scroll y las letras entran sin desenfoque.
+- Prueba simulando un Android de gama media (393 px, densidad 2,75, CPU 4 veces más lenta): quieto de ~23–33 a ~56–60 cuadros por segundo; haciendo scroll de ~6–7 a ~35–41.
+- En computador e iPhone todo se ve igual que antes.
+
 ## v34 · 21 de octubre de 2026
 - **Rutas internas sin 404:** al abrir directo o recargar `/blog`, `/proyectos`, `/proyectos/...`, `/terminos`, `/privacidad`, `/reembolsos`, etc. Vercel mostraba "404: NOT_FOUND". Se cambió la regla de `frontend/vercel.json` por la estándar de SPA (`/(.*)` → `/index.html`); los archivos reales (imágenes, assets, robots, sitemap) se siguen sirviendo primero.
 - **Estadísticas de GitHub más robustas:** Render usa IPs compartidas y sin token GitHub limita a 60 consultas/hora, por eso la sección mostraba "No pude conectar". Ahora el servicio reintenta sin token si el token está vencido (401), devuelve los últimos datos buenos cuando GitHub falla, tiene tiempo máximo de 10 s y deja en el log de Render el motivo exacto (usuario inexistente, límite alcanzado, etc.). **Requiere `GITHUB_TOKEN` en las variables de entorno de Render.**
